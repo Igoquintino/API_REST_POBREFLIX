@@ -1,0 +1,16 @@
+{
+  "name": "api_rest_pobreflix",
+  "version": "1.0.0",
+  "main": "./src/server.js",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  },
+  "scripts": {
+    "start": "nodemon ./src/server.js"
+  }
+}
+
