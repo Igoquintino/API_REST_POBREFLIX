@@ -8,6 +8,7 @@ import catalogRoutes from "./routes/catalogRoutes.js"; // Importando as rotas de
 import userRoutes from "./routes/userRoutes.js";
 import rootRoutes from "./routes/rootRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
+import logAccessRoutes from "./routes/logAccessRoutes.js";
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -19,6 +20,7 @@ app.use("/catalog", catalogRoutes);
 app.use("/", rootRoutes); 
 app.use("/users", userRoutes);
 app.use("/history", historyRoutes);
+app.use("/logAccess", logAccessRoutes);
 
 
 app.listen(port, () => {
