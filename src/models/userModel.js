@@ -21,7 +21,6 @@ export default {
 
             console.log("Senha hasheada:", hashedPassword);
 
-
             return result.rows[0];
         } catch (err) {
             console.error("Erro ao cadastrar usuário:", err.message);
@@ -32,14 +31,11 @@ export default {
     // Cosulta ao banco, por ( id || nome || email )da tabela users ADM
     async selectUsersByIdOrNameOrEmail(id, name, email) {
         try {
-    
-            // Inicializa as partes dinâmicas da consulta
             const pool = await connect();
             let query = "SELECT * FROM users WHERE ";
             const values = [];
             const conditions = [];
     
-            // Adiciona condições dinamicamente com base nos parâmetros fornecidos
             if (id) {
                 conditions.push("id = $1");
                 values.push(id);
@@ -57,8 +53,7 @@ export default {
             if (conditions.length === 0) {
                 throw new Error("Pelo menos um parâmetro (id, name ou email) deve ser fornecido.");
             }
-    
-            // Constrói a consulta final
+
             query += conditions.join(" OR ");
             const res = await pool.query(query, values);
     
@@ -74,14 +69,14 @@ export default {
     // Consulta ao banco, todos os usuarios ADM
     async selectAllUsers() {
         try {
-    
-            const pool = await connect(); // Garante que o pool está conectado
+
+            const pool = await connect(); 
             const res = await pool.query("SELECT * FROM users");
             return res.rows;
     
         } catch (err) {
             console.error('Erro ao consultar os usuarios:', err.message);
-            throw err; // Repassa o erro para tratamento posterior
+            throw err; 
         }
     },
     
@@ -90,7 +85,6 @@ export default {
         try {
             const pool = await connect();
     
-            // Busca os dados atuais do usuário
             const existingUserQuery = "SELECT * FROM users WHERE id = $1";
             const existingUserResult = await pool.query(existingUserQuery, [id]);
             if (existingUserResult.rows.length === 0) {
@@ -99,14 +93,12 @@ export default {
     
             const existingUser = existingUserResult.rows[0];
     
-            // Preenche os campos não fornecidos com os valores existentes
             const updatedFields = {
                 name: fields.name || existingUser.name,
                 email: fields.email || existingUser.email,
                 password: fields.password || existingUser.password, // mantém o password atual
             };
-    
-            // Cria dinamicamente a query de atualização
+
             const keys = Object.keys(updatedFields);
             const values = keys.map((key) => updatedFields[key]);
     
@@ -127,7 +119,7 @@ export default {
             const pool = await connect();
             const query = "DELETE FROM users WHERE id = $1 RETURNING *";
             const result = await pool.query(query, [id]);
-            return result.rows[0] || null; // Retorna o usuário excluído ou null se não encontrado
+            return result.rows[0] || null; 
         } catch (err) {
             console.error("Erro ao excluir usuário:", err.message);
             throw err;
