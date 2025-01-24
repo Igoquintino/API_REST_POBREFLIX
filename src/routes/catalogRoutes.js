@@ -13,13 +13,13 @@ router.get("/", async (req, res) => {
             });
         }
         const catalog = await catalogModel.selectAllCatalog();
-        res.json(catalog); // Correto
+        res.json(catalog);
     } catch (err) {
         res.status(500).json({ error: `Erro ao buscar todos os filmes: ${err.message}` });
     }
 }),
-//concertar isso aqui também
 
+// Rota para consultar filmes por tipo
 router.get("/type/:content_type", async (req, res) => {
     try {
         if (Object.keys(req.query).length > 0) {
@@ -66,7 +66,6 @@ router.patch("/:id", async (req, res) => {
         const { id } = req.params;
         const { title, description, genre, content_type, video_url } = req.body;
 
-        // Validação básica
         if (!title && !description && !genre && !content_type && !video_url) {
             return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
         }
@@ -75,7 +74,6 @@ router.patch("/:id", async (req, res) => {
             return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
         }
 
-        // Atualiza os campos fornecidos
         const movie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url });
 
         if (!movie) {
@@ -93,17 +91,15 @@ router.delete("/:id", async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Chama o modelo para excluir o filme
         const deletedMovie = await catalogModel.deleteMovie(id);
 
         if (!deletedMovie) {
             return res.status(404).json({ error: "Filme não encontrado." });
         }
 
-        res.status(204).send(); // Status 204 (No Content)
+        res.status(204).send();
     } catch (err) {
         res.status(500).json({ error: `Erro ao excluir filme: ${err.message}` });
     }
 });
 export default router;
-

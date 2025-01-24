@@ -1,4 +1,5 @@
 import { connect } from "../../config/database.js";
+
 // Consulta ao banco, historico de consumo ADM
 export default {
 
@@ -8,7 +9,7 @@ export default {
         const res = await pool.query("SELECT * FROM consumption_history");
         return res.rows;
     },
-    
+
     // Consulta ao banco, historico de consumo ADM/USER
     async selectHistoryByUserId(userId) {
     

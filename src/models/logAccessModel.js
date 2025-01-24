@@ -8,7 +8,6 @@ export default {
         return res.rows;
         
     },
-    
     // Consulta ao banco, relatorio de consumo ou log de acesso por id ADM/USER
     async logAccessByUserId(catalog_id) {
     
@@ -17,5 +16,3 @@ export default {
         return res.rows;
     }
 };
-
-
