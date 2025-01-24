@@ -3,7 +3,7 @@ import { connect } from "../../config/database.js";
 export default {
 
     async selectHistory() {
-        
+    
         const pool = await connect();
         const res = await pool.query("SELECT * FROM consumption_history");
         return res.rows;

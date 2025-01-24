@@ -3,12 +3,21 @@ import { connect } from "../../config/database.js";
 
 // Função para adicionar um filme ou série ao catálogo ADM
 export default {    
-    async addToCatalog(title, description, release_date, genre) {
+    //ta enviando o mesmo conteudo, concertar
+    async addToCatalog(title, description, genre, content_type, video_url) {
         try {
+            // Validações
+            if (!title || !content_type || !video_url) {
+                throw new Error("Os campos title, content_type e video_url são obrigatórios.");
+            }
+            if (!['filme', 'serie'].includes(content_type)) {
+                throw new Error("O campo content_type deve ser 'filme' ou 'serie'.");
+            }
+    
             const pool = await connect();
             const res = await pool.query(
-                "INSERT INTO catalog (title, description, release_date, genre) VALUES ($1, $2, $3, $4) RETURNING *",
-                [title, description, release_date, genre]
+                "INSERT INTO catalog (title, description, genre, content_type, video_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+                [title, description, genre, content_type, video_url]
             );
             return res.rows[0];
         } catch (err) {
@@ -32,7 +41,18 @@ export default {
             throw err;
         }
     },
-    
+
+    async selectCatalogByType(content_type) {
+        try {
+            const pool = await connect();
+            const res = await pool.query("SELECT * FROM catalog WHERE content_type = $1", [content_type]);
+            return res.rows;
+        } catch (err) {
+            console.error('Erro ao consultar por tipo:', err.message);
+            throw err;
+        }
+    },
+
     // Função para consultar filme pelo título ADM/USER
     async selectCatalogByTitle(title) {
         try {
@@ -52,16 +72,25 @@ export default {
     },
     
     // Função para atualizar informações de um filme ADM
-    async updateMovie(id, title, description, release_date, genre) {
+    async updateCatalog(id, fields) {
         try {
             const pool = await connect();
-            const res = await pool.query(
-                "UPDATE catalog SET title = $1, description = $2, release_date = $3, genre = $4 WHERE id = $5 RETURNING *",
-                [title, description, release_date, genre, id]
-            );
-            return res.rows[0];
+    
+            // Cria dinamicamente a query de atualização
+            const keys = Object.keys(fields).filter((key) => fields[key] !== undefined);
+            const values = keys.map((key) => fields[key]);
+    
+            if (keys.length === 0) {
+                throw new Error("Nenhum campo para atualizar.");
+            }
+    
+            const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+            const query = `UPDATE catalog SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+    
+            const result = await pool.query(query, [...values, id]);
+            return result.rows[0];
         } catch (err) {
-            console.error('Erro ao atualizar filme no catálogo:', err.message);
+            console.error("Erro ao atualizar filme no catálogo:", err.message);
             throw err;
         }
     },
@@ -70,11 +99,12 @@ export default {
     async deleteMovie(id) {
         try {
             const pool = await connect();
-            const res = await pool.query("DELETE FROM catalog WHERE id = $1 RETURNING *", [id]);
-            return res.rows[0];
+            const query = "DELETE FROM catalog WHERE id = $1 RETURNING *";
+            const result = await pool.query(query, [id]);
+            return result.rows[0] || null; // Retorna o filme excluído ou null se não encontrado
         } catch (err) {
-            console.error('Erro ao excluir filme do catálogo:', err.message);
+            console.error("Erro ao excluir filme:", err.message);
             throw err;
         }
-    }    
+    }   
 };
