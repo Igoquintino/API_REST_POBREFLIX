@@ -1,13 +1,20 @@
 import express from "express";
 import userController from "../controllers/userController.js";
+import { authenticate, authenticateAdmin } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", userController.getAllUsers); // Lista todos os usuários
-router.get("/search", userController.getUserByIdOrNameOrEmail); // Busca por ID, nome ou email
-router.post("/", userController.createUser); // Cria um novo usuário
-router.patch("/:id", userController.updateUser); // Atualiza um usuário
-router.delete("/:id", userController.deleteUser); // Exclui um usuário
+// Aplica o middleware em todas as rotas abaixo
+// concetar a rotas com o middlewar/ authenticate
+// verificar as funções que vão estar disponivel para o ADM só 
+
+router.get("/", authenticate, userController.getAllUsers);
+router.get("/search", authenticateAdmin,userController.getUserByIdOrNameOrEmail);
+router.post("/" , authenticate, userController.createUser);
+router.patch("/:id", authenticate, userController.updateUser);
+router.delete("/:id", authenticateAdmin, userController.deleteUser);
+
+
 
 export default router;
 

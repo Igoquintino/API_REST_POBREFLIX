@@ -27,7 +27,20 @@ export default {
             throw err;
         }
     },
-    
+
+    //Buscar um usuário pelo email no banco de dados.
+    async getUserByEmail(email) {
+        try {
+            const pool = await connect();
+            const query = "SELECT * FROM users WHERE email = $1";
+            const result = await pool.query(query, [email]);
+            return result.rows[0] || null; // Retorna o usuário ou null se não encontrado
+        } catch (err) {
+            console.error("Erro ao buscar usuário por email:", err.message);
+            throw err;
+        }
+    },
+
     // Cosulta ao banco, por ( id || nome || email )da tabela users ADM
     async selectUsersByIdOrNameOrEmail(id, name, email) {
         try {

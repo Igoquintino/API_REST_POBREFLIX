@@ -9,6 +9,9 @@ import userRoutes from "./routes/userRoutes.js";
 import rootRoutes from "./routes/rootRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
 import logAccessRoutes from "./routes/logAccessRoutes.js";
+import consumptionRoutes from "./routes/historyRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -21,6 +24,9 @@ app.use("/", rootRoutes);
 app.use("/users", userRoutes);
 app.use("/history", historyRoutes);
 app.use("/logAccess", logAccessRoutes);
+app.use("/consumption", consumptionRoutes);
+app.use("/auth", authRoutes); // Adiciona as rotas de autenticação
+
 
 
 app.listen(port, () => {

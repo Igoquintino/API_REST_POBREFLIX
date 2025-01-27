@@ -1,10 +1,14 @@
 import express from "express";
 import historyController from "../controllers/historyController.js";
+import consumptionController from "../controllers/consumptionController.js";
+import { authenticate } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 router.get("/", historyController.getAllHistory); // Lista todos o histórico
 router.get("/:id", historyController.getAllHistoryById); // Busca por ID
+
+router.post("/", authenticate, consumptionController.register); // rota de autenticação
 
 export default router;
 

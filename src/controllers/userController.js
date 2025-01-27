@@ -24,6 +24,10 @@ const userController = {
             if (!id && !name && !email) {
                 return res.status(400).json({ error: "Pelo menos um parâmetro (id, name ou email) deve ser fornecido." });
             }
+
+            if (req.userType !== 'Administrator' && req.userId !== id) {
+                return res.status(403).json({ error: "Acesso proibido. Você só pode ver seus próprios dados." });
+            }
     
             const users = await userModel.selectUsersByIdOrNameOrEmail(id, name, email);
             res.json(users);
@@ -74,6 +78,10 @@ const userController = {
                     error: "Pelo menos um campo deve ser fornecido para atualização."
                 });
             }
+
+            if (req.userType !== 'Administrator' && req.userId !== parseInt(id)) {
+                return res.status(403).json({ error: "Acesso proibido. Você só pode atualizar seus próprios dados." });
+            }
     
             if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 return res.status(400).json({
@@ -101,6 +109,11 @@ const userController = {
     async deleteUser(req, res) {
         try {
             const { id } = req.params;
+
+            // Apenas administradores podem excluir outros usuários
+            if (req.userType !== 'Administrator') {
+                return res.status(403).json({ error: "Acesso proibido. Apenas administradores podem excluir usuários." });
+            }
 
             const deletedUser = await userModel.deleteUser(id);
 
