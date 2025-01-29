@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 // Função para adicionar um novo usuario a tabela users ADM/USER adm pode so adicionar outro adms '*tem que tratar essa função*'
 export default {
-    async addUser(name, email, password, user_type, creatorUserType) {
+    async addUser(name, email, password, user_type, creatorUserType) { // Criar user ADM/USER OK!
         try {
             const pool = await connect();
 
