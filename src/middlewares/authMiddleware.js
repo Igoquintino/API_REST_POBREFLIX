@@ -25,6 +25,7 @@ export const authenticate = async (req, res, next) => {
         }       
 
         req.createUserType = userDecode.userType;
+        req.userId = userDecode.userId;
 
         next();
     } catch (err) {

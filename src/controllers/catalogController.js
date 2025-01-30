@@ -34,9 +34,17 @@ const catalogController = {
 
             const creatorUserType = req.createUserType;
             console.log("usuario autenticado: ",creatorUserType);
+            //console.log(creatorUserType === ("Administrator" || "Client"));
+            // const userId = req.userId
+            // console.log("userId: ");
+            // // Impedindo usuários não-usuarios da PobreFlix de acessar todo o catálogo
+            // if (userId !== null) {
+            //     return console.log("então o usuario autenticado por id para log access: .", userId);
+            // }
     
             // Impedindo usuários não-usuarios da PobreFlix de acessar o 
             if (creatorUserType !== ("Administrator" || "Client")) {
+                console.log(creatorUserType !== ("Administrator" || "Client"));
                 return res.status(403).json({
                     error: "Só usuário da PobreFlix podem visualizar o Catálogo.",
                 });

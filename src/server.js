@@ -9,7 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import rootRoutes from "./routes/rootRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
 import logAccessRoutes from "./routes/logAccessRoutes.js";
-import consumptionRoutes from "./routes/historyRoutes.js";
+import consumptionRoutes from "./routes/consumptionRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 
 
