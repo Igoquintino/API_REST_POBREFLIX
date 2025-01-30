@@ -1,7 +1,7 @@
 import userModel from "../models/userModel.js";
 
 const userController = {
-       async getAllUsers(req, res) { // Pegar todos os usuários OK! ADM
+    async getAllUsers(req, res) { // Pegar todos os usuários OK! ADM
         try {
             // Pegando o userType corretamente do middleware
             const creatorUserType = req.createUserType;
@@ -44,10 +44,6 @@ const userController = {
             if (!id && !name && !email) {
                 return res.status(400).json({ error: "Pelo menos um parâmetro (id, name ou email) deve ser fornecido." });
             }
-
-            // if (req.userType !== 'Administrator' && req.userId !== id) {
-            //     return res.status(403).json({ error: "Acesso proibido. Você só pode ver seus próprios dados." });
-            // }
     
             const users = await userModel.selectUsersByIdOrNameOrEmail(id, name, email);
             res.json(users);

@@ -78,7 +78,7 @@ export default {
     },
 
     // Cosulta ao banco, por ( id || nome || email )da tabela users ADM
-    async selectUsersByIdOrNameOrEmail(id, name, email) {
+    async selectUsersByIdOrNameOrEmail(id, name, email) { // Busca por id, name ou email OK! ADM
         try {
             const pool = await connect();
             let query = "SELECT * FROM users WHERE ";
@@ -115,7 +115,7 @@ export default {
         }
     },
     
-    async selectAllUsers() {
+    async selectAllUsers() { // Busca todos os usuários OK! ADM
         try {
             
             const pool = await connect();
@@ -130,7 +130,7 @@ export default {
         }
     }, 
 
-    async updateUser(id, fields) { // funcionando tudo OK ADM/USER
+    async updateUser(id, fields) { // funcionando tudo OK! ADM/USER
         try {
             const pool = await connect();
     
@@ -173,7 +173,6 @@ export default {
         }
     }
 ,    
-    
     // Função para excluir um usuario d tabela users por id ADM
     async deleteUser(id, creatorUserType) { // funcionando tudo OK! ADM
         try {  
@@ -192,5 +191,4 @@ export default {
         }
     } 
 };
-
 
