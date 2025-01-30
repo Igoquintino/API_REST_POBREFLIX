@@ -150,7 +150,6 @@ const userController = {
         }
     },
     
-    
     async deleteUser(req, res) { // Apagar usuário ADM OK!
         try {
             const { id } = req.params;

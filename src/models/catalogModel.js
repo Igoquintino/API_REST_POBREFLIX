@@ -4,8 +4,28 @@ import { connect } from "../../config/database.js";
 // Função para adicionar um filme ou série ao catálogo ADM
 export default {    
     //ta enviando o mesmo conteudo, concertar
-    async addToCatalog(title, description, genre, content_type, video_url) {
+    async addToCatalog(title, description, genre, content_type, video_url, creatorUserType) { // Adicionar filme no catalogo OK!
         try {
+
+            // Permitir criação de novos filmes ou séries somente por outro administrador
+            if (creatorUserType !== 'Administrator') {
+                throw new Error("Somente administradores podem adicionar filmes ou séries para o catálogo.");
+            }
+
+            // Verificação se ja existe o filme ou serie
+            const data = await this.selectCatalogByTitle(title);
+
+            const titlesSet = new Set(data.map(item => item.title));
+            const newTitle = title;
+
+                if (titlesSet.has(newTitle)) {
+                    console.log("Esse título já existe!");
+                    throw new Error("O filme ou serie ja existe no catálogo.")
+
+                } else {
+                    console.log("Título único, pode adicionar.");
+                }
+
             // Validações
             if (!title || !content_type || !video_url) {
                 throw new Error("Os campos title, content_type e video_url são obrigatórios.");
@@ -19,6 +39,7 @@ export default {
                 "INSERT INTO catalog (title, description, genre, content_type, video_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
                 [title, description, genre, content_type, video_url]
             );
+
             return res.rows[0];
         } catch (err) {
             console.error('Erro ao adicionar filme ao catálogo:', err.message);
@@ -27,7 +48,7 @@ export default {
     },
     
     // Função para consultar todo o catálogo ADM/USER
-    async selectAllCatalog() {
+    async selectAllCatalog() { // Lista todos o catalogo OK!
         try {
             const pool = await connect();
             const res = await pool.query("SELECT * FROM catalog");
@@ -42,7 +63,7 @@ export default {
         }
     },
 
-    async selectCatalogByType(content_type) {
+    async selectCatalogByType(content_type) { // Lista todos pelo tipo Catálogo OK!
         try {
             const pool = await connect();
             const res = await pool.query("SELECT * FROM catalog WHERE content_type = $1", [content_type]);
@@ -54,7 +75,7 @@ export default {
     },
 
     // Função para consultar filme pelo título ADM/USER
-    async selectCatalogByTitle(title) {
+    async selectCatalogByTitle(title) { // Busca por Titulo OK!
         try {
             const pool = await connect();
             const res = await pool.query("SELECT * FROM catalog WHERE title = $1", [title]);
@@ -72,7 +93,7 @@ export default {
     },
     
     // Função para atualizar informações de um filme ADM
-    async updateCatalog(id, fields) {
+    async updateCatalog(id, fields) { // Atualizar filme no catalogo OK!
         try {
             const pool = await connect();
     
@@ -96,7 +117,7 @@ export default {
     },
    
     // Função para excluir um filme do catálogo por ID ADM
-    async deleteMovie(id) {
+    async deleteMovie(id) { // Deletar filme no catalogo OK!
         try {
             const pool = await connect();
             const query = "DELETE FROM catalog WHERE id = $1 RETURNING *";

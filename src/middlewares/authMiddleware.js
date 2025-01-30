@@ -31,9 +31,4 @@ export const authenticate = async (req, res, next) => {
         return res.status(401).json({ error: err.message });
     }
 };
-export const authenticateAdmin = (req, res, next) => {
-    if (req.userType !== 'Administrator') {
-        return res.status(403).json({ error: "Acesso proibido. Somente administradores podem acessar essa rota." });
-    }
-    next();
-};
+

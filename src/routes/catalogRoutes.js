@@ -1,15 +1,15 @@
-// src/routes/catalogRoutes.js
 import express from "express";
 import catalogController from "../controllers/catalogController.js";
+import { authenticate } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", catalogController.getAllCatalog); // Lista todos o catalogo USER
-router.get("/type/:content_type", catalogController.getCatalogByType); // Busca por Type USER
-router.get("/:title", catalogController.getCatalogByTitle); // Busca por Titulo USER
-router.post("/addCatalog", catalogController.createCatalog); // Adicionar filme no catalog ADM
-router.patch("/:id", catalogController.upCatalog); // atualizar filme no catalog ADM
-router.delete("/:id", catalogController.deleteCatalog); // excluir filme no catalog ADM
+router.get("/", authenticate, catalogController.getAllCatalog); // Lista todos o catalogo USER OK!
+router.get("/type/:content_type", authenticate, catalogController.getCatalogByType); // Busca por Type USER OK!
+router.get("/:title", authenticate, catalogController.getCatalogByTitle); // Busca por Titulo USER OK!
+router.post("/addCatalog", authenticate, catalogController.createCatalog); // Adicionar filme no catalog ADM OK!
+router.patch("/:id", authenticate, catalogController.upCatalog); // atualizar filme no catalog ADM
+router.delete("/:id", authenticate, catalogController.deleteCatalog); // excluir filme no catalog ADM
 
 export default router;
 

@@ -19,3 +19,9 @@ export const authenticate = (req, res, next) => {
         return res.status(401).json({ error: "Token inválido ou expirado." });
     }
 };
+
+
+// {
+//     "email": "client1@example.com",
+//     "password": "senhaClient"
+// }
