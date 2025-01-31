@@ -7,8 +7,7 @@ const historyController = {
             const creatorUserType = req.createUserType;
             console.log("usuario autenticado: ",creatorUserType);
     
-            // Impedindo usuários não-usuarios da PobreFlix de acessar o 
-            if (creatorUserType !== ("Administrator" || "Client")) {
+            if (creatorUserType !== "Administrator" && creatorUserType !== "Client"){
                 return res.status(403).json({
                     error: "Só usuário e administradores da PobreFlix podem visualizar o histórico.",
                 });

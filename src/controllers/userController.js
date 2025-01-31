@@ -53,7 +53,7 @@ const userController = {
         }
     },
 
-    async createUser(req, res) { // Criar usuário USER/ADM OK!
+    async createUser(req, res) { // Criar usuário USER/ADM mas só para adm OK!
         try {
             const { name, email, password, user_type } = req.body;
             
