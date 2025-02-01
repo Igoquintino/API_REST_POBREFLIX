@@ -36,7 +36,7 @@ CREATE TABLE consumption_history (
 -- Consumption Reports Table
 CREATE TABLE consumption_reports (
     id SERIAL PRIMARY KEY,
-    catalog_id INT REFERENCES catalog(id) ON DELETE CASCADE,
+    catalog_id INT REFERENCES catalog(id) ON DELETE CASCADE UNIQUE,
     views INT DEFAULT 0,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
