@@ -11,6 +11,7 @@ import historyRoutes from "./routes/historyRoutes.js";
 import logAccessRoutes from "./routes/logAccessRoutes.js";
 import consumptionRoutes from "./routes/consumptionRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import externalApiRoutes from './routes/externalApiRoutes';
 
 
 const port = process.env.PORT || 3000;
@@ -26,6 +27,7 @@ app.use("/history", historyRoutes);
 app.use("/logAccess", logAccessRoutes);
 app.use("/consumption", consumptionRoutes);
 app.use("/auth", authRoutes); // Adiciona as rotas de autenticação
+app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem
 
 
 

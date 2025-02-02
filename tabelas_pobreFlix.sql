@@ -44,7 +44,9 @@ CREATE TABLE consumption_reports (
 -- External API Integration Table
 CREATE TABLE external_api (
     id SERIAL PRIMARY KEY,
-    source VARCHAR(100) NOT NULL,
-    catalog_id INT REFERENCES catalog(id) ON DELETE CASCADE,
-    synced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    source VARCHAR(100) NOT NULL, -- Nome da API (ex: 'SuperFlix')
+    catalog_id INT UNIQUE REFERENCES catalog(id) ON DELETE CASCADE, -- Garantindo que um catálogo só tenha um registro na API
+    synced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data da sincronização
+    api_url TEXT NOT NULL -- URL usada para sincronizar (link da SuperFlix)
 );
+

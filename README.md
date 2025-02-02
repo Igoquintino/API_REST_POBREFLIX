@@ -61,7 +61,7 @@ npm install
 ### 3️⃣ Configurar Banco de Dados
 Crie um arquivo `.env` na raiz do projeto e adicione:
 ```sh
-DB_URI=postgres://usuario:senha@localhost:5432/pobreflix
+CONNECTION_STRING=postgres://usuario:senha@localhost:(5432 ou porta_que_escolheu)/nome_do_seu_banco
 JWT_SECRET=sua_chave_secreta
 JWT_EXPIRES_IN=2h
 PORT=3000
