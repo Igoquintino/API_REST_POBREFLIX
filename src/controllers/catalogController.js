@@ -1,5 +1,4 @@
 import catalogModel from "../models/catalogModel.js";
-// import { authUserAdm } from "../middlewares/authMiddleware.js";
 
 const catalogController = {
 

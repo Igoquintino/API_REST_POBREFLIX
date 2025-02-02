@@ -1,10 +1,10 @@
 import express from 'express';
-import ExternalApiController from '../controllers/externalApiController';
-import { authenticate } from '../middlewares/authMiddleware';
+import externalApiController from '../controllers/externalApiController.js';
+import { authenticate } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
 // Rota para registrar o uso da API
-router.post('/register', authenticate, ExternalApiController.registerApiUsage);
+router.post('/register', authenticate, externalApiController.registerApiUsage);
 
 export default router;

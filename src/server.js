@@ -11,7 +11,7 @@ import historyRoutes from "./routes/historyRoutes.js";
 import logAccessRoutes from "./routes/logAccessRoutes.js";
 import consumptionRoutes from "./routes/consumptionRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-import externalApiRoutes from './routes/externalApiRoutes';
+import externalApiRoutes from './routes/externalApiRoutes.js';
 
 
 const port = process.env.PORT || 3000;

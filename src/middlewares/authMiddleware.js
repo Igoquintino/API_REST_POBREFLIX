@@ -1,5 +1,5 @@
 import { verifyToken } from "../utils/auth.js";
-import { connect} from "../../config/database.js";
+import { connect } from "../../config/database.js";
 
 export const authenticate = async (req, res, next) => {
     
