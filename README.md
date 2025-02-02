@@ -103,7 +103,8 @@ O servidor rodará em: **http://localhost:3000**
 - `POST /users/create` → Criar usuário (Administrador/Usuário Autenticado)
 - `POST /consumption` → Registrar que um usuário assistiu um filme (Usuário Autenticado)
 - `POST /auth/login` → Fazer login e obter token JWT (Público)
-- `POST /auth/logout` → Fazer logout e invalidar o token (Usuário Autenticado)
+- `POST /auth/logout` → Fazer logout e invalidar o token (Usuário Autenticado)  
+- `POST /api/external-api/register` → Fazer registro de api's utilizadas na aplicação web (streamin PobreFlix)
 
 ### 🟠 **PATCH (Atualizar Dados)**
 - `PATCH /catalog/:id` → Atualizar informações do catálogo (Administrador)
