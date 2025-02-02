@@ -31,6 +31,7 @@ app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem
 
 
 
+
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
