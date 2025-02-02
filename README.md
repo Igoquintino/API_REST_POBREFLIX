@@ -66,10 +66,19 @@ JWT_SECRET=sua_chave_secreta
 JWT_EXPIRES_IN=2h
 PORT=3000
 ```
-
+  
 ### 4️⃣ Executar a API
+caso não tenha instalado para desenvolvimento o nodemon ou yarn, instale com  
+```sh 
+npm install --save-dev nodemon # Instalação local (dentro do projeto, recomendado para evitar conflitos)
+```  
+O Yarn é um gerenciador de pacotes para JavaScript, procure instalar por favor caso queira, para esse projeto ele ja vai configurado.  
+
+agora sobre a exercução:
 ```sh
-npm start
+node ./src/server.js || npm run prod  # com node normal, sem reiniciar automaticamente  
+npm run dev # Para exercutar e reexecutar a cada modificações usando o npm e nodemon   
+yarn start # Para exercutar e reexecutar a cada modificações
 ```
 O servidor rodará em: **http://localhost:3000**
 
