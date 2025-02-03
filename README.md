@@ -50,7 +50,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{[
+"[
     {
         "id": 17,
         "name": "IgoAdmin",
@@ -72,7 +72,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "password": "$2b$10$9c8qemuAQGPpVSbbsAIaPuHS1.JWb1pV2rIwJsPXI4Dsu5hMcZG06",
         "user_type": "Client"
     }
-]}"
+]"
 ```
 
 ### Todos catálogos
@@ -138,7 +138,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{[
+"[
     {
         "id": 34,
         "name": "NovoAdmim110",
@@ -146,7 +146,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "password": "$2b$10$6IxK/iQY6uzrr1JLPfxgIOYk1bbnxHuQWGclWbp9R0Zbam2SrGOB2",
         "user_type": "Administrator"
     }
-]}"
+]"
 ```
 
 ### Conteúdo por Title
@@ -176,7 +176,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{[
+"[
     {
         "id": 3,
         "user_id": 17,
@@ -201,7 +201,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 3,
         "watched_at": "2025-01-30T19:56:34.811Z"
     }
-]}"
+]"
 ```
 
 ### Historico pelo Id do usuario
@@ -211,7 +211,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{[
+"[
     {
         "id": 3,
         "user_id": 17,
@@ -236,7 +236,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 3,
         "watched_at": "2025-01-30T19:56:34.811Z"
     }
-]}"
+]"
 ```
 
 ### Todos catálogo por Tipo
@@ -302,7 +302,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{[
+"[
     {
         "id": 1,
         "source": "superflixapi",
@@ -321,7 +321,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 2,
         "synced_at": "2025-02-02T18:02:28.810Z"
     }
-]}"
+]"
 ```
 
 ## Req_POST
@@ -343,12 +343,12 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{{
+"{
     "id": 41,
     "name": "AdmNew",
     "email": "AdmNew@email.com",
     "user_type": "Administrator"
-}}"
+}"
 ```
 
 ### Postar usuarios / USER e não autenticados
