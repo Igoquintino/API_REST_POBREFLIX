@@ -50,7 +50,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 17,
         "name": "IgoAdmin",
@@ -72,7 +72,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "password": "$2b$10$9c8qemuAQGPpVSbbsAIaPuHS1.JWb1pV2rIwJsPXI4Dsu5hMcZG06",
         "user_type": "Client"
     }
-]"
+]
 ```
 
 ### Todos catálogos
@@ -82,7 +82,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 2,
         "title": "O Filme Exemplo",
@@ -128,7 +128,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "video_url": "https://superflixapi.link/filme/tt3513054",
         "created_at": "2025-01-30T17:05:55.620Z"
     }
-]"
+]
 ```
 
 ### Usuario por ID, Nome ou email
@@ -138,7 +138,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 34,
         "name": "NovoAdmim110",
@@ -146,7 +146,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "password": "$2b$10$6IxK/iQY6uzrr1JLPfxgIOYk1bbnxHuQWGclWbp9R0Zbam2SrGOB2",
         "user_type": "Administrator"
     }
-]"
+]
 ```
 
 ### Conteúdo por Title
@@ -156,7 +156,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 3,
         "title": "A Origem",
@@ -166,7 +166,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "video_url": "https://superflixapi.link/filme/tt1375666",
         "created_at": "2025-01-21T14:49:29.890Z"
     }
-]"
+]
 ```
 
 ### Todos Histórico
@@ -176,7 +176,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 3,
         "user_id": 17,
@@ -201,7 +201,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 3,
         "watched_at": "2025-01-30T19:56:34.811Z"
     }
-]"
+]
 ```
 
 ### Historico pelo Id do usuario
@@ -211,7 +211,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 3,
         "user_id": 17,
@@ -236,7 +236,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 3,
         "watched_at": "2025-01-30T19:56:34.811Z"
     }
-]"
+]
 ```
 
 ### Todos catálogo por Tipo
@@ -246,7 +246,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 2,
         "title": "O Filme Exemplo",
@@ -292,7 +292,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "video_url": "https://superflixapi.link/filme/tt3513054",
         "created_at": "2025-01-30T17:05:55.620Z"
     }
-]"
+]
 ```
 
 ### pegar todos o registro da api
@@ -302,7 +302,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"[
+[
     {
         "id": 1,
         "source": "superflixapi",
@@ -321,7 +321,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "catalog_id": 2,
         "synced_at": "2025-02-02T18:02:28.810Z"
     }
-]"
+]
 ```
 
 ## Req_POST
@@ -333,22 +333,22 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "name": "AdmNew",
     "email": "AdmNew@email.com",
     "password": "aplicativos2!",
     "user_type": "Administrator"
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 41,
     "name": "AdmNew",
     "email": "AdmNew@email.com",
     "user_type": "Administrator"
-}"
+}
 ```
 
 ### Postar usuarios / USER e não autenticados
@@ -358,19 +358,19 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     {
     "name": "NewClient",
     "email": "NewCliet@email.com",
     "password": "aplicativos2!",
     "user_type": "Client"
+    }
 }
-}"
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{{
+{
     "message": "Usuário cadastrado com sucesso!",
     "user": {
         "id": 42,
@@ -378,7 +378,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "email": "NewCliet@email.com",
         "user_type": "Client"
     }
-}}"
+}
 ```
 
 ### postar catálogo
@@ -388,18 +388,18 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "title": "Männerhort",
     "description": "Três homens têm problemas diferentes com suas parceiras. Para não serem perturbados, eles criaram um lugar secreto dentro de uma sala de caldeiras apenas para homens. O Männerhort.",
     "genre": "Comédia, Drama",
     "content_type": "filme",
     "video_url": "https://superflixapi.link/filme/1142364"
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 23,
     "title": "Männerhort",
     "description": "Três homens têm problemas diferentes com suas parceiras. Para não serem perturbados, eles criaram um lugar secreto dentro de uma sala de caldeiras apenas para homens. O Männerhort.",
@@ -407,7 +407,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
     "content_type": "filme",
     "video_url": "https://superflixapi.link/filme/1142364",
     "created_at": "2025-02-03T18:19:52.859Z"
-}"
+}
 ```
 
 ### assistir um filme
@@ -417,19 +417,19 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "catalogId": 3
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 1,
     "catalog_id": 3,
     "views": 6,
     "updated_at": "2025-02-03T18:21:00.009Z"
-}"
+}
 ```
 
 ### Login ADM
@@ -439,15 +439,15 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "email": "igo@example.com",
     "password": "aplicativos2!"
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "message": "Login bem-sucedido!",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE3LCJ1c2VyVHlwZSI6IkFkbWluaXN0cmF0b3IiLCJpYXQiOjE3Mzg2MDUwNTksImV4cCI6MTczODYwODY1OX0.F-ps5LIlQceF25ZgoVlX4WX4n7nn3YKkq1DUFrUiVek",
     "user": {
@@ -456,7 +456,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "email": "igo@example.com",
         "user_type": "Administrator"
     }
-}"
+}
 ```
 
 ### Login USER
@@ -466,15 +466,15 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "email": "client@email.com",
     "password": "aplicativos2!"
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "message": "Login bem-sucedido!",
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjM5LCJ1c2VyVHlwZSI6IkNsaWVudCIsImlhdCI6MTczODYwNDk1NSwiZXhwIjoxNzM4NjA4NTU1fQ.NbdZh1s0CaKhOA73d_myhDwt2LKoYTJwl6ooLM3NMpY",
     "user": {
@@ -483,7 +483,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
         "email": "client@email.com",
         "user_type": "Client"
     }
-}"
+}
 ```
 
 ### Logout
@@ -498,9 +498,9 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "message": "Logout realizado com sucesso!"
-}"
+}
 ```
 
 ### registro_da_api
@@ -510,20 +510,20 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
   "source": "superflixapi",
   "catalogId": 2
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 4,
     "source": "superflixapi",
     "catalog_id": 2,
     "synced_at": "2025-02-03T18:26:34.275Z"
-}"
+}
 ```
 
 ## req_PATCH
@@ -535,20 +535,20 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "name": "Adm110",
     "email": "admin4312@email.com"
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 34,
     "name": "Adm110",
     "email": "admin4312@email.com",
     "user_type": "Administrator"
-}"
+}
 ```
 
 ### Atualizar_catálogo
@@ -558,15 +558,15 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 
 **Body:** 
 ```json
-"{
+{
     "title": "novo",
     "genre": "Drama, Comédia "
-}"
+}
 ```
 
 **Exemplo de Resposta:** 
 ```json
-"{
+{
     "id": 7,
     "title": "novo",
     "description": "A verdadeira história sobre o casal Jerry e Marge Selbee, que ganham na loteria e usam o dinheiro para reviver sua pequena cidade.",
@@ -574,7 +574,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
     "content_type": "filme",
     "video_url": "https://superflixapi.link/filme/tt8323668",
     "created_at": "2025-01-23T21:24:02.174Z"
-}"
+}
 ```
 
 ## req_DELETE
