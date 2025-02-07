@@ -12,11 +12,15 @@ import logAccessRoutes from "./routes/logAccessRoutes.js";
 import consumptionRoutes from "./routes/consumptionRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import externalApiRoutes from './routes/externalApiRoutes.js';
+import cors from "cors";
 
 
 const port = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
+// Habilite o CORS
+app.use(cors()); // Isso permitirá que o backend aceite requisições de qualquer origem. Se quiser restringir a origem, você pode configurar o CORS mais especificamente.
+
 
 
 // Rotas
