@@ -4,9 +4,8 @@ import { connect } from "../../config/database.js";
 // Função para adicionar um filme ou série ao catálogo ADM
 export default {    
     //ta enviando o mesmo conteudo, concertar
-    async addToCatalog(title, description, genre, content_type, video_url, creatorUserType) { // Adicionar filme no catalogo OK!
+    async addToCatalog(title, description, genre, content_type, video_url, image_url, creatorUserType) { // Adicionar filme no catalogo OK!
         try {
-
             // Permitir criação de novos filmes ou séries somente por outro administrador
             if (creatorUserType !== 'Administrator') {
                 throw new Error("Somente administradores podem adicionar filmes ou séries para o catálogo.");
@@ -36,8 +35,8 @@ export default {
     
             const pool = await connect();
             const res = await pool.query(
-                "INSERT INTO catalog (title, description, genre, content_type, video_url) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-                [title, description, genre, content_type, video_url]
+                "INSERT INTO catalog (title, description, genre, content_type, video_url, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+                [title, description, genre, content_type, video_url, image_url]
             );
 
             return res.rows[0];

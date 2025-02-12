@@ -50,3 +50,5 @@ CREATE TABLE external_api (
     api_url TEXT NOT NULL -- URL usada para sincronizar (link da SuperFlix)
 );
 
+ALTER TABLE catalog ADD COLUMN image_url TEXT;
+

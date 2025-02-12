@@ -6,6 +6,7 @@ const catalogController = {
         try {
 
             const creatorUserType = req.createUserType;
+            console.log(creatorUserType);
            
             if (creatorUserType !== "Administrator" && creatorUserType !== "Client"){
                 return res.status(403).json({
@@ -80,9 +81,10 @@ const catalogController = {
 
              // Tipo padrão: todos os usuários comuns são criados como Client
             const creatorUserType = req.createUserType;
+            console.log(creatorUserType);
 
-            const { title, description, genre, content_type, video_url } = req.body;
-            const movie = await catalogModel.addToCatalog(title, description, genre, content_type, video_url, creatorUserType);
+            const { title, description, genre, content_type, video_url, image_url } = req.body;
+            const movie = await catalogModel.addToCatalog(title, description, genre, content_type, video_url, image_url, creatorUserType);
             res.status(201).json(movie);
         } catch (err) {
             res.status(500).json({ error: `Erro ao cadastrar filme: ${err.message}` });
