@@ -72,8 +72,9 @@ const authController = {
             if (expiresIn > 0) {
                 addToBlacklist(token, expiresIn);
             }
-            
+            console.log("Logout realizado com sucesso!");
             res.status(200).json({ message: "Logout realizado com sucesso!" });
+
         } catch (err) {
             res.status(500).json({ error: "Erro ao fazer logout." });
         }
