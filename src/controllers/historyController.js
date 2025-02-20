@@ -6,10 +6,11 @@ const historyController = {
 
             const creatorUserType = req.createUserType;
             console.log("usuario autenticado: ",creatorUserType);
-    
-            if (creatorUserType !== "Administrator" && creatorUserType !== "Client"){
+
+            // Impedindo usuários não-administradores de acessar a lista
+            if (creatorUserType !== "Administrator") {
                 return res.status(403).json({
-                    error: "Só usuário e administradores da PobreFlix podem visualizar o histórico.",
+                    error: "Apenas administradores podem visualizar o histórico geral.",
                 });
             }
 
@@ -26,10 +27,9 @@ const historyController = {
             // Pegando o userType corretamente do middleware
             const creatorUserType = req.createUserType;
     
-            // Impedindo usuários não-administradores de acessar a lista
-            if (creatorUserType !== "Administrator") {
+            if (creatorUserType !== "Administrator" && creatorUserType !== "Client"){
                 return res.status(403).json({
-                    error: "Apenas administradores podem visualizar o histórico especifico.",
+                    error: "Só usuário e administradores da PobreFlix podem visualizar o histórico.",
                 });
             }
 

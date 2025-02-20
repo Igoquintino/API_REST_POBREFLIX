@@ -2,7 +2,7 @@ import catalogModel from "../models/catalogModel.js";
 
 const catalogController = {
 
-    async getAllCatalog(req, res) { // Lista todos o catalogo OK! USER
+    async getAllCatalog(req, res) { // Lista todos o catalogo OK! USER  
         try {
 
             const creatorUserType = req.createUserType;
@@ -28,7 +28,7 @@ const catalogController = {
     },
     
     // Rota para consultar filmes por tipo
-    async getCatalogByType(req, res){ // Lista todos pelo tipo Catálogo OK! USER
+    async getCatalogByType(req, res){ // Lista todos pelo tipo Catálogo OK! USER 
         try {
 
             const creatorUserType = req.createUserType;
