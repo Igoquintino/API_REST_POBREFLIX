@@ -93,7 +93,7 @@ const catalogController = {
                 });
             }
     
-            const catalog = await catalogModel.selectCatalogByTitle(req.params.id); // Passa o ID
+            const catalog = await catalogModel.selectCatalogByID(req.params.id); // Passa o ID
             res.json(catalog);
         } catch (err) {
             res.status(500).json({ error: `Erro ao buscar filme: ${err.message}` });

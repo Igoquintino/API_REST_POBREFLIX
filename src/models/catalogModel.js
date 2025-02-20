@@ -76,16 +76,37 @@ export default {
     // Função para consultar filme pelo título ADM/USER
     async selectCatalogByTitle(title) { // Busca por Titulo ou ID OK!
         try {
-            const id = parseInt(title)
             const pool = await connect();
-            const query = "SELECT * FROM catalog WHERE title = $1 OR id = $2";
-            const values = [title, id]; // Parâmetros em um único array
+            const query = "SELECT * FROM catalog WHERE title = $1";
+            const values = [title]; // Parâmetros em um único array
             const res = await pool.query(query, values);
             
     
             if (res.rows.length === 0) {
-                console.log(`Nenhum filme encontrado com o título: ${title} ou ID: ${id}`);
-                return [{ message: `Nenhum filme encontrado com o título: ${title} ou ID: ${id}` }];
+                console.log(`Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}`);
+                return [{ message: `Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}` }];
+            }
+    
+            return res.rows;
+        } catch (err) {
+            console.log(`Erro ao consultar o catálogo: ${err.message}`);
+            throw err;
+        }
+    },
+
+    async selectCatalogByID(id) { // Busca por Titulo ou ID OK!
+        try {
+            const userId = parseInt(id)
+            console.log(userId)
+            const pool = await connect();
+            const query = "SELECT * FROM catalog WHERE id = $1";
+            const values = [userId]; // Parâmetros em um único array
+            const res = await pool.query(query, values);
+            
+    
+            if (res.rows.length === 0) {
+                console.log(`Nenhum filme encontrado com o ID: ${id}`);
+                return [{ message: `Nenhum filme encontrado com o ID: ${id}` }];
             }
     
             return res.rows;

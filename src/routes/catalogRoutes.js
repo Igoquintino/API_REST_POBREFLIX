@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", authenticate, catalogController.getAllCatalog); // Lista todos o catalogo USER OK! *
 router.get("/type/:content_type", authenticate, catalogController.getCatalogByType); // Busca por Type USER OK! *
 router.get("/:title", authenticate, catalogController.getCatalogByTitle); // Busca por Titulo ou ID USER OK! *
-router.get("/:id", authenticate, catalogController.getCatalogById); // Busca por ID USER OK! 
+router.get("/id/:id", authenticate, catalogController.getCatalogById); // Busca por ID USER OK! 
 router.post("/addCatalog", authenticate, catalogController.createCatalog); // Adicionar filme no catalog ADM OK! 
 router.patch("/:id", authenticate, catalogController.upCatalog); // atualizar filme no catalog ADM OK!
 router.delete("/:id", authenticate, catalogController.deleteCatalog); // excluir filme no catalog ADM OK! 
