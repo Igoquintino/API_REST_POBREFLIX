@@ -74,20 +74,24 @@ export default {
     },
 
     // Função para consultar filme pelo título ADM/USER
-    async selectCatalogByTitle(title) { // Busca por Titulo OK!
+    async selectCatalogByTitle(title) { // Busca por Titulo ou ID OK!
         try {
+            const id = parseInt(title)
             const pool = await connect();
-            const res = await pool.query("SELECT * FROM catalog WHERE title = $1", [title]);
+            const query = "SELECT * FROM catalog WHERE title = $1 OR id = $2";
+            const values = [title, id]; // Parâmetros em um único array
+            const res = await pool.query(query, values);
+            
     
             if (res.rows.length === 0) {
-                console.log(`Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}`);
-                return [{ message: `Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}` }];
+                console.log(`Nenhum filme encontrado com o título: ${title} ou ID: ${id}`);
+                return [{ message: `Nenhum filme encontrado com o título: ${title} ou ID: ${id}` }];
             }
     
             return res.rows;
         } catch (err) {
             console.log(`Erro ao consultar o catálogo: ${err.message}`);
-            throw err; 
+            throw err;
         }
     },
     

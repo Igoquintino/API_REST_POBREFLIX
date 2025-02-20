@@ -68,6 +68,8 @@ const catalogController = {
                     error: "Esta rota não aceita parâmetros. Use /catalog/:title para consultas específicas.",
                 });
             }
+
+
             const catalog = await catalogModel.selectCatalogByTitle(req.params.title);
             res.json(catalog);  
         } catch (err) {
@@ -75,6 +77,29 @@ const catalogController = {
         }
     },
     
+    async getCatalogById(req, res) { // Busca por ID
+        try {
+            const creatorUserType = req.createUserType;
+    
+            if (creatorUserType !== "Administrator" && creatorUserType !== "Client") {
+                return res.status(403).json({
+                    error: "Só usuários da PobreFlix podem visualizar o título do Catálogo.",
+                });
+            }
+    
+            if (Object.keys(req.query).length > 0) {
+                return res.status(400).json({
+                    error: "Esta rota não aceita parâmetros. Use /catalog/:title para consultas específicas.",
+                });
+            }
+    
+            const catalog = await catalogModel.selectCatalogByTitle(req.params.id); // Passa o ID
+            res.json(catalog);
+        } catch (err) {
+            res.status(500).json({ error: `Erro ao buscar filme: ${err.message}` });
+        }
+    },
+
     // Rota para adicionar um filme ao catálogo
     async createCatalog(req, res){ // Adicionar filme no catalogo OK! ADM
         try {
