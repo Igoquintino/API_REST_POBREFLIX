@@ -29,7 +29,7 @@ app.use("/", rootRoutes);
 app.use("/users", userRoutes);
 app.use("/history", historyRoutes);
 app.use("/logAccess", logAccessRoutes);
-app.use("/consumption", consumptionRoutes);
+app.use("/consumption", consumptionRoutes); // *
 app.use("/auth", authRoutes); // Adiciona as rotas de autenticação
 app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem
 

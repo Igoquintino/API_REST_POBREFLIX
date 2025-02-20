@@ -9,7 +9,7 @@ router.get("/search", authenticate,userController.getUserByIdOrNameOrEmail); // 
 router.post("/register", userController.registerUser); // Criar usuário USER OK! *
 router.post("/create", authenticate, userController.createUser); // Criar usuário USER/ADM OK! *
 router.patch("/:id", authenticate, userController.updateUser); // atualizar usuário ADM e USER OK! *
-router.delete("/:id", authenticate, userController.deleteUser); // apagar usuário ADM OK! 
+router.delete("/:id", authenticate, userController.deleteUser); // apagar usuário ADM OK! *
 
 
 export default router;

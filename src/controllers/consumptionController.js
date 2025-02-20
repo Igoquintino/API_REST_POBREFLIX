@@ -1,7 +1,7 @@
 import { registerConsumption } from "../models/consumptionModel.js";
 
 const consumptionController = {
-    async register(req, res) {
+    async register(req, res) { // Registra o consumo OK!
         try {
             const { catalogId } = req.body;
             const userId = req.userId;
