@@ -16,6 +16,9 @@ import cors from "cors";
 
 
 const port = process.env.PORT || 3000;
+export const TMDB_BASE_URL = process.env.TMDB_BASE_URL;
+export const TMDB_API_KEY = process.env.TMDB_API_KEY;
+
 const app = express();
 app.use(express.json());
 // Habilite o CORS

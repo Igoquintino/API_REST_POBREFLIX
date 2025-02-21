@@ -106,7 +106,7 @@ const catalogController = {
 
              // Tipo padrão: todos os usuários comuns são criados como Client
             const creatorUserType = req.createUserType;
-            console.log(creatorUserType);
+            //console.log(creatorUserType);
 
             const { title, description, genre, content_type, video_url, image_url } = req.body;
             const movie = await catalogModel.addToCatalog(title, description, genre, content_type, video_url, image_url, creatorUserType);

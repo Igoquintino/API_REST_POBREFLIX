@@ -43,7 +43,30 @@ const externalApiController = {
     } catch (err) {
       return res.status(500).json({ error: "Erro interno do servidor" });
     }
+  },
+
+  async getMoviePoster(req, res) {
+    const { title } = req.query;
+
+    if (!title) {
+      return res.status(400).json({ error: "O título do filme é obrigatório." });
+    }
+
+    try {
+      const movieData = await externalApi.getMoviePoster(title);
+      console.log(movieData);
+
+      if (movieData.error) {
+        return res.status(404).json({ error: movieData.error });
+      }
+
+      return res.status(200).json(movieData);
+    } catch (err) {
+      console.error("Erro ao buscar cartaz do filme:", err.message);
+      return res.status(500).json({ error: "Erro interno do servidor" });
+    }
   }
-}
+
+};
 
 export default externalApiController;

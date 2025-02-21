@@ -1,3 +1,4 @@
+
 import { connect } from "../../config/database.js";
 
 // Consulta ao banco, historico de consumo ADM
