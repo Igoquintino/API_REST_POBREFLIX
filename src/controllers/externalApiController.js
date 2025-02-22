@@ -45,28 +45,29 @@ const externalApiController = {
     }
   },
 
-  async getMoviePoster(req, res) {
-    const { title } = req.query;
+    async getMoviePoster(title) {
+      try {
+          console.log("Título recebido:", title); // Verifique no console
 
-    if (!title) {
-      return res.status(400).json({ error: "O título do filme é obrigatório." });
-    }
+          if (!title) {
+              throw new Error("O título do filme é obrigatório.");
+          }
 
-    try {
-      const movieData = await externalApi.getMoviePoster(title);
-      console.log(movieData);
+          // Chama a função que busca o poster na API externa
+          const movieData = await externalApi.getMoviePoster(title);
+          console.log("DADOS RECEBIDOS:", movieData); // Verifique no console
 
-      if (movieData.error) {
-        return res.status(404).json({ error: movieData.error });
+          if (!movieData || movieData.error) {
+              throw new Error(movieData?.error || "Poster não encontrado.");
+          }
+
+          // Retorna a URL do poster
+          return movieData.poster_url;
+      } catch (err) {
+          console.error("Erro ao buscar cartaz do filme:", err.message);
+          throw err; // Propaga o erro para ser tratado no controller
       }
-
-      return res.status(200).json(movieData);
-    } catch (err) {
-      console.error("Erro ao buscar cartaz do filme:", err.message);
-      return res.status(500).json({ error: "Erro interno do servidor" });
-    }
   }
-
 };
 
 export default externalApiController;

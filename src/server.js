@@ -21,6 +21,7 @@ export const TMDB_API_KEY = process.env.TMDB_API_KEY;
 
 const app = express();
 app.use(express.json());
+//app.use(express.urlencoded({ extended: true })); // Garante suporte a dados URL-encoded
 // Habilite o CORS
 app.use(cors()); // Isso permitirá que o backend aceite requisições de qualquer origem. Se quiser restringir a origem, você pode configurar o CORS mais especificamente.
 

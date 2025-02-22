@@ -6,13 +6,16 @@ export default {
     //ta enviando o mesmo conteudo, concertar
     async addToCatalog(title, description, genre, content_type, video_url, image_url, creatorUserType) { // Adicionar filme no catalogo OK!
         try {
+            console.log(title, description, genre, content_type, video_url);
             // Permitir criação de novos filmes ou séries somente por outro administrador
             if (creatorUserType !== 'Administrator') {
                 throw new Error("Somente administradores podem adicionar filmes ou séries para o catálogo.");
             }
+            console.log(title, image_url)
 
             // Verificação se ja existe o filme ou serie
             const data = await this.selectCatalogByTitle(title);
+            console.log(data);
 
             const titlesSet = new Set(data.map(item => item.title));
             const newTitle = title;

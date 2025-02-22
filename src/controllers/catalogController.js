@@ -1,4 +1,5 @@
 import catalogModel from "../models/catalogModel.js";
+import externalApiController from "../controllers/externalApiController.js";
 
 const catalogController = {
 
@@ -106,10 +107,18 @@ const catalogController = {
 
              // Tipo padrão: todos os usuários comuns são criados como Client
             const creatorUserType = req.createUserType;
-            //console.log(creatorUserType);
+            console.log(creatorUserType);
 
-            const { title, description, genre, content_type, video_url, image_url } = req.body;
-            const movie = await catalogModel.addToCatalog(title, description, genre, content_type, video_url, image_url, creatorUserType);
+            const { title, description, genre, content_type, video_url } = req.body; // tirei o image_url
+            console.log("esse é o titulo:   ",title);
+            
+            const poster_url = await externalApiController.getMoviePoster(title);
+            console.log(title);
+            console.log(poster_url);
+            console.log("type: ", creatorUserType)
+
+            const movie = await catalogModel.addToCatalog(title, description, genre, content_type, video_url, poster_url, creatorUserType);
+            console.log(movie);
             res.status(201).json(movie);
         } catch (err) {
             res.status(500).json({ error: `Erro ao cadastrar filme: ${err.message}` });

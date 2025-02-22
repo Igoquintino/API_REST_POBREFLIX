@@ -34,38 +34,39 @@ export default {
       return res.status(500).json({ error: "Erro interno do servidor" });
     }
   },
-    async getMoviePoster(movieTitle) {
-      try {
+  async getMoviePoster(movieTitle) {
+    try {
+
         // Faz a requisição para buscar o filme pelo título
         const response = await axios.get(`${TMDB_BASE_URL}/search/movie`, {
-          params: {
-            api_key: TMDB_API_KEY,
-            query: movieTitle,
-          },
+            params: {
+                api_key: TMDB_API_KEY,
+                query: movieTitle, // Usa apenas o título recebido
+            },
         });
-  
+
         const movies = response.data.results;
-  
+
         if (movies.length === 0) {
-          return { error: "Filme não encontrado" };
+            return { error: "Filme não encontrado" };
         }
-  
+
         // Pegamos o primeiro filme da lista de resultados
         const movie = movies[0];
         const posterPath = movie.poster_path;
-  
+
         if (!posterPath) {
-          return { error: "Este filme não tem cartaz disponível." };
+            return { error: "Este filme não tem cartaz disponível." };
         }
-  
+
         return {
-          title: movie.title,
-          poster_url: `https://image.tmdb.org/t/p/w500${posterPath}`,
+            title: movie.title,
+            poster_url: `https://image.tmdb.org/t/p/w500${posterPath}`,
         };
-      } catch (error) {
+    } catch (error) {
         console.error("Erro ao buscar cartaz do filme:", error.message);
         return { error: "Erro ao acessar a API do TMDb" };
-      }
-    },
+    }
+},
 }
 
