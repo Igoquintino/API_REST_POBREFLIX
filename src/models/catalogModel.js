@@ -87,7 +87,7 @@ export default {
     
             if (res.rows.length === 0) {
                 console.log(`Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}`);
-                return [{ message: `Nenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}` }];
+                return [{ message: `fdNenhum filme encontrado com o nome: ${title} e rowCount: ${res.rowCount}` }];
             }
     
             return res.rows;
@@ -119,29 +119,87 @@ export default {
         }
     },
     
+    // // Função para atualizar informações de um filme ADM
+    // async updateCatalog(id, fields) {
+    //     try {
+    //         const pool = await connect();
+    
+    //         // Busca o filme atual no banco
+    //         const existingMovieQuery = "SELECT * FROM catalog WHERE id = $1";
+    //         const existingMovieResult = await pool.query(existingMovieQuery, [id]);
+    
+    //         if (existingMovieResult.rows.length === 0) {
+    //             throw new Error("Filme ou Série não encontrado.");
+    //         }
+    
+    //         const existingMovie = existingMovieResult.rows[0];
+    
+    //         // Mantém os valores antigos caso não sejam enviados na requisição
+    //         const updatedFields = {
+    //             title: fields.title || existingMovie.title,
+    //             description: fields.description || existingMovie.description,
+    //             genre: fields.genre || existingMovie.genre,
+    //             content_type: fields.content_type || existingMovie.content_type,
+    //             video_url: fields.video_url || existingMovie.video_url,
+    //             poster_url: fields.poster_url || existingMovie.poster_url, // Inclui o poster_url
+    //         };
+    
+    //         // Constrói a query dinamicamente
+    //         const keys = Object.keys(updatedFields);
+    //         const values = keys.map((key) => updatedFields[key]);
+    
+    //         const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+    //         const query = `UPDATE catalog SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+    
+    //         // Executa a query e retorna o filme atualizado
+    //         const result = await pool.query(query, [...values, id]);
+    //         return result.rows[0];
+    //     } catch (err) {
+    //         console.error("Erro ao atualizar filme:", err.message);
+    //         throw err;
+    //     }
+    // },
     // Função para atualizar informações de um filme ADM
-    async updateCatalog(id, fields) { // Atualizar filme no catalogo OK!
-        try {
-            const pool = await connect();
-    
-            // Cria dinamicamente a query de atualização
-            const keys = Object.keys(fields).filter((key) => fields[key] !== undefined);
-            const values = keys.map((key) => fields[key]);
-    
-            if (keys.length === 0) {
-                throw new Error("Nenhum campo para atualizar.");
-            }
-    
-            const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
-            const query = `UPDATE catalog SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
-    
-            const result = await pool.query(query, [...values, id]);
-            return result.rows[0];
-        } catch (err) {
-            console.error("Erro ao atualizar filme no catálogo:", err.message);
-            throw err;
+async updateCatalog(id, fields) {
+    try {
+        const pool = await connect();
+
+        // Busca o filme atual no banco
+        const existingMovieQuery = "SELECT * FROM catalog WHERE id = $1";
+        const existingMovieResult = await pool.query(existingMovieQuery, [id]);
+
+        if (existingMovieResult.rows.length === 0) {
+            throw new Error("Filme ou Série não encontrado.");
         }
-    },
+
+        const existingMovie = existingMovieResult.rows[0];
+
+        // Mantém os valores antigos caso não sejam enviados na requisição
+        const updatedFields = {
+            title: fields.title || existingMovie.title,
+            description: fields.description || existingMovie.description,
+            genre: fields.genre || existingMovie.genre,
+            content_type: fields.content_type || existingMovie.content_type,
+            video_url: fields.video_url || existingMovie.video_url,
+            image_url: fields.image_url || existingMovie.image_url, // Substitui poster_url por image_url
+        };
+
+        // Constrói a query dinamicamente
+        const keys = Object.keys(updatedFields);
+        const values = keys.map((key) => updatedFields[key]);
+
+        const setClause = keys.map((key, index) => `${key} = $${index + 1}`).join(", ");
+        const query = `UPDATE catalog SET ${setClause} WHERE id = $${keys.length + 1} RETURNING *`;
+
+        // Executa a query e retorna o filme atualizado
+        const result = await pool.query(query, [...values, id]);
+        return result.rows[0];
+    } catch (err) {
+        console.error("Erro ao atualizar filme:", err.message);
+        throw err;
+    }
+}
+,
    
     // Função para excluir um filme do catálogo por ID ADM
     async deleteMovie(id) { // Deletar filme no catalogo OK!
@@ -154,5 +212,7 @@ export default {
             console.error("Erro ao excluir filme:", err.message);
             throw err;
         }
-    }   
+    }  
 };
+
+

@@ -126,42 +126,208 @@ const catalogController = {
     },
     
     // Rota para atualizar um filme no catálogo
-    async upCatalog (req, res) { // Atualizar filme no catalogo OK! ADM
-        try {
+    // async upCatalog (req, res) { // Atualizar filme no catalogo OK! ADM
+    //     try {
 
-            const { id } = req.params;
-            const { title, description, genre, content_type, video_url } = req.body;
+    //         const { id } = req.params;
+    //         const { title, description, genre, content_type, video_url } = req.body;
 
-            const creatorUserType = req.createUserType;
-            console.log(`Usuário autenticado: ${creatorUserType}`);
+    //         const creatorUserType = req.createUserType;
+    //         console.log(`Usuário autenticado: ${creatorUserType}`);
     
-            // validações de atualização
-            if (creatorUserType !== 'Administrator') {
-                return res.status(403).json({
-                    error: "Apenas administradores podem alterar o Catalógo.",
-                });
-            }
+    //         // validações de atualização
+    //         if (creatorUserType !== 'Administrator') {
+    //             return res.status(403).json({
+    //                 error: "Apenas administradores podem alterar o Catalógo.",
+    //             });
+    //         }
 
-            if (!title && !description && !genre && !content_type && !video_url) {
-                return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
-            }
+    //         if (!title && !description && !genre && !content_type && !video_url) {
+    //             return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
+    //         }
     
-            if (content_type && !['filme', 'serie'].includes(content_type)) {
-                return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
-            }
+    //         if (content_type && !['filme', 'serie'].includes(content_type)) {
+    //             return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
+    //         }
     
-            // consulta ao banco e atualização
-            const movie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url });
+    //         // consulta ao banco e atualização
+    //         const movie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url });
     
-            if (!movie) {
-                return res.status(404).json({ error: "Filme ou Serie não encontrado para atualização." });
-            }
+    //         if (!movie) {
+    //             return res.status(404).json({ error: "Filme ou Serie não encontrado para atualização." });
+    //         }
     
-            res.status(200).json(movie);
-        } catch (err) {
-            res.status(500).json({ error: `Erro ao atualizar filme: ${err.message}` });
+    //         res.status(200).json(movie);
+    //     } catch (err) {
+    //         res.status(500).json({ error: `Erro ao atualizar filme: ${err.message}` });
+    //     }
+    // }
+    // async upCatalog(req, res) { // Atualizar filme no catalogo OK! ADM
+    //     try {
+    //         const { id } = req.params;
+    //         const { title, description, genre, content_type, video_url } = req.body;
+    
+    //         const creatorUserType = req.createUserType;
+    //         console.log(`Usuário autenticado: ${creatorUserType}`);
+    
+    //         // Validações de atualização
+    //         if (creatorUserType !== 'Administrator') {
+    //             return res.status(403).json({
+    //                 error: "Apenas administradores podem alterar o Catálogo.",
+    //             });
+    //         }
+    
+    //         if (!title && !description && !genre && !content_type && !video_url) {
+    //             return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
+    //         }
+    
+    //         if (content_type && !['filme', 'serie'].includes(content_type)) {
+    //             return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
+    //         }
+    
+    //         // Busca o filme atual no banco de dados
+    //         const currentMovie = await catalogModel.getCatalogById(id);
+    //         if (!currentMovie) {
+    //             return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+    //         }
+    
+    //         // Verifica se o título foi alterado
+    //         let poster_url = currentMovie.poster_url; // Mantém o poster atual por padrão
+    //         if (title && title !== currentMovie.title) {
+    //             // Se o título foi alterado, busca o novo poster
+    //             try {
+    //                 poster_url = await externalApiController.getMoviePoster(title);
+    //                 console.log("Novo poster encontrado:", poster_url);
+    //             } catch (err) {
+    //                 console.error("Erro ao buscar novo poster:", err.message);
+    //                 // Se não encontrar um novo poster, mantém o poster atual
+    //                 poster_url = currentMovie.poster_url;
+    //             }
+    //         }
+    
+    //         // Atualiza o filme no banco de dados
+    //         const updatedMovie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url, poster_url });
+    
+    //         if (!updatedMovie) {
+    //             return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+    //         }
+    
+    //         res.status(200).json(updatedMovie);
+    //     } catch (err) {
+    //         console.error("Erro ao atualizar filme:", err.message);
+    //         res.status(500).json({ error: `Erro ao atualizar filme: ${err.message}` });
+    //     }
+    // },
+    // async upCatalog(req, res) { // Atualizar filme no catalogo OK! ADM
+    //     try {
+    //         const { id } = req.params;
+    //         const { title, description, genre, content_type, video_url } = req.body;
+    
+    //         const creatorUserType = req.createUserType;
+    //         console.log(`Usuário autenticado: ${creatorUserType}`);
+    
+    //         // Validações de atualização
+    //         if (creatorUserType !== 'Administrator') {
+    //             return res.status(403).json({
+    //                 error: "Apenas administradores podem alterar o Catálogo.",
+    //             });
+    //         }
+    
+    //         if (!title && !description && !genre && !content_type && !video_url) {
+    //             return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
+    //         }
+    
+    //         if (content_type && !['filme', 'serie'].includes(content_type)) {
+    //             return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
+    //         }
+    
+    //         // Busca o filme atual no banco de dados
+    //         const currentMovie = await catalogModel.selectCatalogByID(id);
+    //         if (!currentMovie || currentMovie.length === 0) {
+    //             return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+    //         }
+    
+    //         // Verifica se o título foi alterado
+    //         let poster_url = currentMovie[0].poster_url; // Mantém o poster atual por padrão
+    //         if (title && title !== currentMovie[0].title) {
+    //             // Se o título foi alterado, busca o novo poster
+    //             try {
+    //                 poster_url = await externalApiController.getMoviePoster(title);
+    //                 console.log("Novo poster encontrado:", poster_url);
+    //             } catch (err) {
+    //                 console.error("Erro ao buscar novo poster:", err.message);
+    //                 // Se não encontrar um novo poster, mantém o poster atual
+    //                 poster_url = currentMovie[0].poster_url;
+    //             }
+    //         }
+    
+    //         // Atualiza o filme no banco de dados
+    //         const updatedMovie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url, poster_url });
+    
+    //         if (!updatedMovie) {
+    //             return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+    //         }
+    
+    //         res.status(200).json(updatedMovie);
+    //     } catch (err) {
+    //         console.error("Erro ao atualizar filme:", err.message);
+    //         res.status(500).json({ error: `Erro ao atualizar filme: ${err.message}` });
+    //     }
+    // },
+    // Atualizar filme no catálogo (Controller)
+async upCatalog(req, res) {
+    try {
+        const { id } = req.params;
+        const { title, description, genre, content_type, video_url } = req.body;
+
+        const creatorUserType = req.createUserType;
+        console.log(`Usuário autenticado: ${creatorUserType}`);
+
+        if (creatorUserType !== 'Administrator') {
+            return res.status(403).json({ error: "Apenas administradores podem alterar o Catálogo." });
         }
-    },
+
+        if (!title && !description && !genre && !content_type && !video_url) {
+            return res.status(400).json({ error: "Pelo menos um campo deve ser fornecido para atualização." });
+        }
+
+        if (content_type && !['filme', 'serie'].includes(content_type)) {
+            return res.status(400).json({ error: "O campo content_type deve ser 'filme' ou 'serie'." });
+        }
+
+        // Busca o filme atual no banco de dados
+        const currentMovie = await catalogModel.selectCatalogByID(id);
+        if (!currentMovie || currentMovie.length === 0) {
+            return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+        }
+
+        // Verifica se o título foi alterado
+        let image_url = currentMovie[0].image_url; // Mantém o image_url atual
+        console.log(title)
+        if (title && title !== currentMovie[0].title) {
+            try {
+                image_url = await externalApiController.getMoviePoster(title);
+                console.log("Novo pôster encontrado:", image_url);
+            } catch (err) {
+                console.error("Erro ao buscar novo pôster:", err.message);
+                image_url = currentMovie[0].image_url; // Mantém o antigo caso falhe
+            }
+        }
+
+        // Atualiza o filme no banco de dados
+        const updatedMovie = await catalogModel.updateCatalog(id, { title, description, genre, content_type, video_url, image_url });
+
+        if (!updatedMovie) {
+            return res.status(404).json({ error: "Filme ou Série não encontrado para atualização." });
+        }
+
+        res.status(200).json(updatedMovie);
+    } catch (err) {
+        console.error("Erro ao atualizar filme:", err.message);
+        res.status(500).json({ error: `Erro ao atualizar filme: ${err.message}` });
+    }
+},
+
     
     // Rota para excluir um filme do catálogo
     async deleteCatalog(req, res) { // Excluir filme no catalogo OK! ADM
