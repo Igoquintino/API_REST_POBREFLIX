@@ -34,6 +34,7 @@ const logAccessController = {
             }
     
             const logAccess = await logAccessModel.logAccessByUserId(req.params.id);
+            console.log(logAccess);
             res.json(logAccess);
         } catch (err) {
             res.status(500).json({ error: `Erro ao buscar o log de acesso: ${err.message}` });

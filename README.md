@@ -1,17 +1,26 @@
-# 🎬 Pobreflix API - Backend de Streaming
-
-Pobreflix é uma API desenvolvida em **Node.js** com **Express** e **PostgreSQL** para gerenciar um serviço de streaming simples. A API permite cadastro e autenticação de usuários, gerenciamento de catálogo de filmes/séries, controle de histórico de visualização e muito mais.
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+# 🎬 Pobreflix API - Backend de Streaming  
 
-- **Node.js** - Runtime JavaScript
-- **Express** - Framework para criação de APIs
-- **PostgreSQL** - Banco de dados relacional
-- **JWT (JSON Web Token)** - Autenticação segura
-- **bcrypt** - Hash de senhas para segurança
-- **dotenv** - Gerenciamento de variáveis de ambiente
+Pobreflix é uma API desenvolvida em **Node.js** com **Express** e **PostgreSQL** para gerenciar um serviço de streaming simples. A API permite cadastro e autenticação de usuários, gerenciamento de catálogo de filmes/séries, controle de histórico de visualização e muito mais.  
+
+🔗 **Frontend do Pobreflix:** [Acesse o repositório aqui](<https://github.com/Igoquintino/FRONTEND_PobreFlix.git>)  
+
+---
+
+## 🚀 Tecnologias Utilizadas  
+
+- **Node.js** - Runtime JavaScript  
+- **Express** - Framework para criação de APIs  
+- **PostgreSQL** - Banco de dados relacional   
+- **JWT (JSON Web Token)** - Autenticação segura  
+- **bcrypt** - Hash de senhas para segurança  
+- **dotenv** - Gerenciamento de variáveis de ambiente  
+- **nodemon** - Monitoramento de alterações para recarregamento automático da API  
+- **Axios** - Cliente HTTP para requisições externas  
+- **CORS** - Middleware para controle de acesso entre domínios  
+- **Body-parser** - Manipulação de requisições HTTP  
 
 ---
 
@@ -20,7 +29,7 @@ Pobreflix é uma API desenvolvida em **Node.js** com **Express** e **PostgreSQL*
 ```
 /API_REST_POBREFLIX
 │── /config        # Configurações gerais (database, blacklist)
-│── /node_modules  # Dependências do projeto
+│── /doc           # Documentos do projeto
 │── /src           # Código-fonte principal
 │   │── /controllers   # Lógica das rotas
 │   │── /middlewares   # Middleware de autenticação JWT
@@ -30,8 +39,8 @@ Pobreflix é uma API desenvolvida em **Node.js** com **Express** e **PostgreSQL*
 │   │── server.js      # Arquivo principal para inicializar o servidor
 │── .env           # Variáveis de ambiente (JWT_SECRET, DB_URI, etc.)
 │── package.json   # Dependências e scripts do projeto
+│── setup          # Script de shell para instalar as dependências
 │── yarn.lock      # Gerenciamento de pacotes com Yarn
-│── tabelas_pobreFlix.sql  # Script de criação das tabelas do banco de dados
 ```
 Para entender melhor o uso das rotas, confira a documentação publicada no Postman no link abaixo:
 
@@ -623,7 +632,21 @@ cd API_REST_POBREFLIX
 ### 2️⃣ Instalar Dependências
 ```sh
 npm install
+```  
+Ou se preferir, se tiver instalado o yarn, que será melhor explicado abaixo, você pode exercutar isso:
+```sh
+yarn setup
+```  
+se você preferir pode exercutar apenar um script que vai instalar o yarn para você as dependêcias  
+exercute pelo terminal o arquivo `setup.sh` dentro do projeto  
+detalhe importante, caso você seja usuario de linux ou mac, precisa:
+Para executar no Linux/macOS:
+
+```sh
+chmod +x setup.sh  # Torna o script executável
+./setup.sh
 ```
+No Windows, pode ser executado diretamente no Git Bash ou WSL.
 
 ### 3️⃣ Configurar Banco de Dados
 Crie um arquivo `.env` na raiz do projeto e adicione:
@@ -632,24 +655,40 @@ CONNECTION_STRING=postgres://usuario:senha@localhost:(5432 ou porta_que_escolheu
 JWT_SECRET=sua_chave_secreta
 JWT_EXPIRES_IN=2h
 PORT=3000
-```
-  
-### 4️⃣ Executar a API
-caso não tenha instalado para desenvolvimento o nodemon ou yarn, instale com  
-```sh 
-npm install --save-dev nodemon # Instalação local (dentro do projeto, recomendado para evitar conflitos)
+TMDB_BASE_URL=https://api.themoviedb.org/3
+TMDB_API_KEY=046f685645885ab43dcd221fa2445b8d
 ```  
-O Yarn é um gerenciador de pacotes para JavaScript, procure instalar por favor caso queira, para esse projeto ele ja vai configurado.  
 
-agora sobre a exercução:
+### 4️⃣ Executar a API  
+
+Caso ainda não tenha o **nodemon** ou o **Yarn** instalados para desenvolvimento, instale-os:  
 ```sh
-node ./src/server.js || npm run prod  # com node normal, sem reiniciar automaticamente  
-npm run dev # Para exercutar e reexecutar a cada modificações usando o npm e nodemon   
-yarn start # Para exercutar e reexecutar a cada modificações
+npm install --save-dev nodemon  # Instalação local do nodemon (recomendado para evitar conflitos)
 ```
-O servidor rodará em: **http://localhost:3000**
+O **Yarn** é um gerenciador de pacotes para JavaScript. Caso queira utilizá-lo, instale-o globalmente seguindo a [documentação oficial](https://yarnpkg.com/getting-started/install).  
 
----
+#### 📌 Como executar a API  
+O projeto pode ser iniciado tanto com **Node.js puro**, **npm** ou **yarn**.  
+
+- **Usando Node.js diretamente:**  
+  ```sh
+  node ./src/server.js  # Inicia a API sem reiniciar automaticamente
+  ```
+
+- **Usando npm:**  
+  ```sh
+  npm run prod  # Inicia a API sem reiniciar automaticamente
+  npm run dev   # Inicia a API e recarrega automaticamente ao detectar mudanças
+  ```
+
+- **Usando Yarn:**  
+  ```sh
+  yarn start  # Inicia a API e recarrega automaticamente ao detectar mudanças
+  ```
+
+O servidor estará disponível em: **[http://localhost:3000](http://localhost:3000)**  
+
+---  
 
 ## 🔥 Rotas Disponíveis
 
@@ -662,7 +701,9 @@ O servidor rodará em: **http://localhost:3000**
 - `GET /history` → Listar histórico de consumo (Usuário Autenticado)
 - `GET /history/:id` → Buscar histórico por ID (Administrador)
 - `GET /logAccess` → Listar todos os acessos (Administrador)
-- `GET /logAccess/:id` → Buscar acesso por ID (Administrador)
+- `GET /logAccess/:id` → Buscar acesso por ID (Administrador)  
+- `GET /api/external-api/usage` → Buscar qual api's foi utilizada(streamin PobreFlix) 
+- `GET /api/external-api/movie-poster` → Buscar poster dos filme em uma api web (tmdb) para (streamin PobreFlix)       
 
 ### 🟡 **POST (Criar Dados)**
 - `POST /catalog/addCatalog` → Criar novo filme/série (Administrador)
@@ -671,7 +712,7 @@ O servidor rodará em: **http://localhost:3000**
 - `POST /consumption` → Registrar que um usuário assistiu um filme (Usuário Autenticado)
 - `POST /auth/login` → Fazer login e obter token JWT (Público)
 - `POST /auth/logout` → Fazer logout e invalidar o token (Usuário Autenticado)  
-- `POST /api/external-api/register` → Fazer registro de api's utilizadas na aplicação web (streamin PobreFlix)
+- `POST /api/external-api/register` → Fazer registro de api's utilizadas na aplicação web (streamin PobreFlix)  
 
 ### 🟠 **PATCH (Atualizar Dados)**
 - `PATCH /catalog/:id` → Atualizar informações do catálogo (Administrador)

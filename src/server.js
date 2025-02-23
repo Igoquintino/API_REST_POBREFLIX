@@ -28,14 +28,14 @@ app.use(cors()); // Isso permitirá que o backend aceite requisições de qualqu
 
 
 // Rotas
-app.use("/catalog", catalogRoutes);
+app.use("/catalog", catalogRoutes); //*
 app.use("/", rootRoutes); 
-app.use("/users", userRoutes);
-app.use("/history", historyRoutes);
-app.use("/logAccess", logAccessRoutes);
+app.use("/users", userRoutes); // * *
+app.use("/history", historyRoutes); //** 
+app.use("/logAccess", logAccessRoutes); //**
 app.use("/consumption", consumptionRoutes); // *
-app.use("/auth", authRoutes); // Adiciona as rotas de autenticação
-app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem
+app.use("/auth", authRoutes); // Adiciona as rotas de autenticação *
+app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem *
 
 
 
