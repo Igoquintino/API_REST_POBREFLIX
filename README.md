@@ -48,6 +48,127 @@ Para entender melhor o uso das rotas, confira a documentação publicada no Post
 
 Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou consulte a documentação local neste repositório.  
 
+
+## 📂 Banco de Dados
+O arquivo `tabelas_pobreFlix.sql` contém a estrutura do banco de dados necessária para rodar a aplicação. Antes de iniciar o projeto, execute esse script no PostgreSQL para criar as tabelas.
+
+```sh
+psql -U seu_usuario -d pobreflix -f tabelas_pobreFlix.sql
+```
+
+---
+
+## 🛠️ Instalação e Execução
+
+### 1️⃣ Clonar o Repositório
+```sh
+git clone https://github.com/Igoquintino/API_REST_POBREFLIX.git
+cd API_REST_POBREFLIX
+```
+
+### 2️⃣ Instalar Dependências
+```sh
+npm install
+```  
+Ou se preferir, se tiver instalado o yarn, que será melhor explicado abaixo, você pode exercutar isso:
+```sh
+yarn setup
+```  
+se você preferir pode exercutar apenar um script que vai instalar o yarn para você as dependêcias exercute pelo terminal o arquivo `setup.sh` dentro do projeto detalhe importante, caso você seja usuario de linux ou mac, precisa: Para executar no Linux/macOS:
+
+```sh
+chmod +x setup.sh  # Torna o script executável
+./setup.sh
+```
+No Windows, pode ser executado diretamente no Git Bash ou WSL.
+
+### 3️⃣ Configurar Banco de Dados
+Crie um arquivo `.env` na raiz do projeto e adicione:
+```sh
+CONNECTION_STRING=postgres://usuario:senha@localhost:(5432 ou porta_que_escolheu)/nome_do_seu_banco
+JWT_SECRET=sua_chave_secreta
+JWT_EXPIRES_IN=2h
+PORT=3000
+TMDB_BASE_URL=https://api.themoviedb.org/3
+TMDB_API_KEY=046f685645885ab43dcd221fa2445b8d
+```  
+
+### 4️⃣ Executar a API  
+
+Caso ainda não tenha o **nodemon** ou o **Yarn** instalados para desenvolvimento, instale-os:  
+```sh
+npm install --save-dev nodemon  # Instalação local do nodemon (recomendado para evitar conflitos)
+```
+O **Yarn** é um gerenciador de pacotes para JavaScript. Caso queira utilizá-lo, instale-o globalmente seguindo a [documentação oficial](https://yarnpkg.com/getting-started/install).  
+
+#### 📌 Como executar a API  
+O projeto pode ser iniciado tanto com **Node.js puro**, **npm** ou **yarn**.  
+
+- **Usando Node.js diretamente:**  
+  ```sh
+  node ./src/server.js  # Inicia a API sem reiniciar automaticamente
+  ```
+
+- **Usando npm:**  
+  ```sh
+  npm run prod  # Inicia a API sem reiniciar automaticamente
+  npm run dev   # Inicia a API e recarrega automaticamente ao detectar mudanças
+  ```
+
+- **Usando Yarn:**  
+  ```sh
+  yarn start  # Inicia a API e recarrega automaticamente ao detectar mudanças
+  ```
+
+O servidor estará disponível em: **[http://localhost:3000](http://localhost:3000)**  
+
+---  
+
+## 🔥 Rotas Disponíveis
+
+### 🟢 **GET (Listar Dados)**
+- `GET /catalog` → Listar todos os filmes/séries (Usuário Autenticado)
+- `GET /catalog/type/:content_type` → Buscar catálogo por tipo (Usuário Autenticado)
+- `GET /catalog/:title` → Buscar catálogo por título (Usuário Autenticado)
+- `GET /users` → Listar todos os usuários (Apenas Administrador)
+- `GET /users/search` → Buscar usuário por ID, Nome ou Email (Administrador)
+- `GET /history` → Listar histórico de consumo (Usuário Autenticado)
+- `GET /history/:id` → Buscar histórico por ID (Administrador)
+- `GET /logAccess` → Listar todos os acessos (Administrador)
+- `GET /logAccess/:id` → Buscar acesso por ID (Administrador)  
+- `GET /api/external-api/usage` → Buscar qual api's foi utilizada(streamin PobreFlix) 
+- `GET /api/external-api/movie-poster` → Buscar poster dos filme em uma api web (tmdb) para (streamin PobreFlix)       
+
+### 🟡 **POST (Criar Dados)**
+- `POST /catalog/addCatalog` → Criar novo filme/série (Administrador)
+- `POST /public/register` → Criar conta de usuário (Público)
+- `POST /users/create` → Criar usuário (Administrador/Usuário Autenticado)
+- `POST /consumption` → Registrar que um usuário assistiu um filme (Usuário Autenticado)
+- `POST /auth/login` → Fazer login e obter token JWT (Público)
+- `POST /auth/logout` → Fazer logout e invalidar o token (Usuário Autenticado)  
+- `POST /api/external-api/register` → Fazer registro de api's utilizadas na aplicação web (streamin PobreFlix)  
+
+### 🟠 **PATCH (Atualizar Dados)**
+- `PATCH /catalog/:id` → Atualizar informações do catálogo (Administrador)
+- `PATCH /users/:id` → Atualizar dados do usuário (Administrador/Usuário Autenticado)
+
+### 🔴 **DELETE (Remover Dados)**
+- `DELETE /catalog/:id` → Excluir conteúdo do catálogo (Administrador)
+- `DELETE /users/:id` → Excluir usuário (Administrador)
+
+---
+
+## 🔐 Autenticação com JWT
+
+- Após fazer login (`POST /auth/login`), o backend retorna um **token JWT**.
+- Para acessar rotas protegidas, inclua o token no cabeçalho da requisição:
+
+```http
+Authorization: Bearer seu_token_aqui
+```
+
+---   
+
 ## Documentação da API
 
 ## Req_GET
@@ -608,129 +729,6 @@ Lembrando que deve estar com a autorização do token de adm"
 ```json
 "ele deve retornar um status 204 no content
 Lembrando que deve estar com a autorização do token de adm"
-```
-
----
-
-## 📂 Banco de Dados
-O arquivo `tabelas_pobreFlix.sql` contém a estrutura do banco de dados necessária para rodar a aplicação. Antes de iniciar o projeto, execute esse script no PostgreSQL para criar as tabelas.
-
-```sh
-psql -U seu_usuario -d pobreflix -f tabelas_pobreFlix.sql
-```
-
----
-
-## 🛠️ Instalação e Execução
-
-### 1️⃣ Clonar o Repositório
-```sh
-git clone https://github.com/Igoquintino/API_REST_POBREFLIX.git
-cd API_REST_POBREFLIX
-```
-
-### 2️⃣ Instalar Dependências
-```sh
-npm install
-```  
-Ou se preferir, se tiver instalado o yarn, que será melhor explicado abaixo, você pode exercutar isso:
-```sh
-yarn setup
-```  
-se você preferir pode exercutar apenar um script que vai instalar o yarn para você as dependêcias  
-exercute pelo terminal o arquivo `setup.sh` dentro do projeto  
-detalhe importante, caso você seja usuario de linux ou mac, precisa:
-Para executar no Linux/macOS:
-
-```sh
-chmod +x setup.sh  # Torna o script executável
-./setup.sh
-```
-No Windows, pode ser executado diretamente no Git Bash ou WSL.
-
-### 3️⃣ Configurar Banco de Dados
-Crie um arquivo `.env` na raiz do projeto e adicione:
-```sh
-CONNECTION_STRING=postgres://usuario:senha@localhost:(5432 ou porta_que_escolheu)/nome_do_seu_banco
-JWT_SECRET=sua_chave_secreta
-JWT_EXPIRES_IN=2h
-PORT=3000
-TMDB_BASE_URL=https://api.themoviedb.org/3
-TMDB_API_KEY=046f685645885ab43dcd221fa2445b8d
-```  
-
-### 4️⃣ Executar a API  
-
-Caso ainda não tenha o **nodemon** ou o **Yarn** instalados para desenvolvimento, instale-os:  
-```sh
-npm install --save-dev nodemon  # Instalação local do nodemon (recomendado para evitar conflitos)
-```
-O **Yarn** é um gerenciador de pacotes para JavaScript. Caso queira utilizá-lo, instale-o globalmente seguindo a [documentação oficial](https://yarnpkg.com/getting-started/install).  
-
-#### 📌 Como executar a API  
-O projeto pode ser iniciado tanto com **Node.js puro**, **npm** ou **yarn**.  
-
-- **Usando Node.js diretamente:**  
-  ```sh
-  node ./src/server.js  # Inicia a API sem reiniciar automaticamente
-  ```
-
-- **Usando npm:**  
-  ```sh
-  npm run prod  # Inicia a API sem reiniciar automaticamente
-  npm run dev   # Inicia a API e recarrega automaticamente ao detectar mudanças
-  ```
-
-- **Usando Yarn:**  
-  ```sh
-  yarn start  # Inicia a API e recarrega automaticamente ao detectar mudanças
-  ```
-
-O servidor estará disponível em: **[http://localhost:3000](http://localhost:3000)**  
-
----  
-
-## 🔥 Rotas Disponíveis
-
-### 🟢 **GET (Listar Dados)**
-- `GET /catalog` → Listar todos os filmes/séries (Usuário Autenticado)
-- `GET /catalog/type/:content_type` → Buscar catálogo por tipo (Usuário Autenticado)
-- `GET /catalog/:title` → Buscar catálogo por título (Usuário Autenticado)
-- `GET /users` → Listar todos os usuários (Apenas Administrador)
-- `GET /users/search` → Buscar usuário por ID, Nome ou Email (Administrador)
-- `GET /history` → Listar histórico de consumo (Usuário Autenticado)
-- `GET /history/:id` → Buscar histórico por ID (Administrador)
-- `GET /logAccess` → Listar todos os acessos (Administrador)
-- `GET /logAccess/:id` → Buscar acesso por ID (Administrador)  
-- `GET /api/external-api/usage` → Buscar qual api's foi utilizada(streamin PobreFlix) 
-- `GET /api/external-api/movie-poster` → Buscar poster dos filme em uma api web (tmdb) para (streamin PobreFlix)       
-
-### 🟡 **POST (Criar Dados)**
-- `POST /catalog/addCatalog` → Criar novo filme/série (Administrador)
-- `POST /public/register` → Criar conta de usuário (Público)
-- `POST /users/create` → Criar usuário (Administrador/Usuário Autenticado)
-- `POST /consumption` → Registrar que um usuário assistiu um filme (Usuário Autenticado)
-- `POST /auth/login` → Fazer login e obter token JWT (Público)
-- `POST /auth/logout` → Fazer logout e invalidar o token (Usuário Autenticado)  
-- `POST /api/external-api/register` → Fazer registro de api's utilizadas na aplicação web (streamin PobreFlix)  
-
-### 🟠 **PATCH (Atualizar Dados)**
-- `PATCH /catalog/:id` → Atualizar informações do catálogo (Administrador)
-- `PATCH /users/:id` → Atualizar dados do usuário (Administrador/Usuário Autenticado)
-
-### 🔴 **DELETE (Remover Dados)**
-- `DELETE /catalog/:id` → Excluir conteúdo do catálogo (Administrador)
-- `DELETE /users/:id` → Excluir usuário (Administrador)
-
----
-
-## 🔐 Autenticação com JWT
-
-- Após fazer login (`POST /auth/login`), o backend retorna um **token JWT**.
-- Para acessar rotas protegidas, inclua o token no cabeçalho da requisição:
-
-```http
-Authorization: Bearer seu_token_aqui
 ```
 
 ---
