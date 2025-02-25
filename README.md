@@ -58,6 +58,104 @@ psql -U seu_usuario -d pobreflix -f tabelas_pobreFlix.sql
 
 ---
 
+Ótima pergunta! Quando você instala o **PostgreSQL**, ele cria automaticamente um **usuário padrão** chamado `postgres`. Esse usuário é o **superusuário do banco de dados**, equivalente ao "root" no Linux. Vamos entender melhor como funciona essa configuração inicial.
+
+---
+
+## 🔹 **Usuário "postgres" na Instalação do PostgreSQL**
+Quando você instala o PostgreSQL, algumas coisas acontecem automaticamente:
+
+1. **Criação do usuário "postgres"**  
+   - Esse é o usuário administrador do PostgreSQL.  
+   - Ele tem **permissão total** para criar bancos, usuários e gerenciar o servidor.
+
+2. **Banco de dados padrão "postgres"**  
+   - Além do usuário, o PostgreSQL cria um **banco de dados chamado "postgres"**.
+   - Esse banco é usado para administração, mas você pode criar novos bancos para seus projetos.
+
+3. **Senha do usuário "postgres"**  
+   - Durante a instalação, você define uma senha para esse usuário.
+   - No **pgAdmin**, você usa esse usuário para se conectar ao servidor pela primeira vez.
+
+---
+
+## 🔹 **Gerenciando Usuários no PostgreSQL**
+Depois de instalar, você pode criar novos usuários e restringir permissões.  
+Por exemplo, para criar um usuário chamado `seuUser` com senha `minha_senha`, execute:
+
+```sql
+CREATE USER seuUser WITH PASSWORD 'minha_senha';
+```
+
+Se quiser dar permissões de administrador para esse usuário:
+
+```sql
+ALTER USER seuUser WITH SUPERUSER;
+```
+
+Ou permitir que ele crie bancos:
+
+```sql
+ALTER USER seuUser CREATEDB;
+```
+
+Agora, você pode usar esse usuário `seuUser` para se conectar no pgAdmin, em vez do `postgres`.
+
+---
+
+## 🔹 **Como Conectar Usando Esse Usuário no pgAdmin**
+Se você criou um novo usuário (`seuUser`), siga os passos para adicioná-lo no pgAdmin:
+1. **Abra o pgAdmin**.
+2. Vá em **Servers** → **Clique com o botão direito** → **Create** → **Server**.
+3. Na aba **Connection**, preencha:
+   - **Host name/address**: `localhost`
+   - **Port**: `5432`
+   - **Maintenance database**: `postgres` (ou um banco que você criou)
+   - **Username**: `seuUser`
+   - **Password**: `minha_senha`
+4. Clique em **Save** e pronto!
+
+Agora, você pode gerenciar o PostgreSQL com seu próprio usuário, sem depender do `postgres`.
+
+Se precisar de mais detalhes, só avisar! 🚀
+
+### 🚀 **Passo 1: Criar um Servidor no pgAdmin**
+1. **Abra o pgAdmin** e clique com o botão direito em **Servers** → **Create** → **Server**.
+2. Na aba **General**, defina um nome para o servidor (ex: `MeuServidor`).
+3. Na aba **Connection**, preencha:
+   - **Host name/address**: `localhost` (ou o IP do servidor se for remoto).
+   - **Port**: `5432` (padrão do PostgreSQL).
+   - **Maintenance database**: `postgres`.
+   - **Username**: `postgres` (ou outro usuário se tiver criado um).
+   - **Password**: (sua senha configurada durante a instalação).
+4. Clique em **Save**.
+
+---
+
+### 📦 **Passo 2: Criar o Banco de Dados**
+1. No pgAdmin, expanda o servidor que você criou.
+2. Clique com o botão direito em **Databases** → **Create** → **Database**.
+3. Escolha um nome para o banco (ex: `meu_banco`).
+4. Em **Owner**, selecione `postgres` (ou o usuário desejado).
+5. Clique em **Save**.
+
+---
+
+### 📋 **Passo 3: Criar as Tabelas**
+Agora, você pode criar tabelas executando comandos SQL no Query Tool do pgAdmin:
+
+1. Expanda seu banco de dados (`meu_banco`).
+2. Clique em **Query Tool** (ícone de lápis no menu superior).
+3. Execute o seguinte SQL para criar tabelas de exemplo:
+
+```sql
+tabelas_pobreFlix.sql
+```
+4. Clique em **Run** (ícone de play).
+
+---
+
+
 ## 🛠️ Instalação e Execução
 
 ### 1️⃣ Clonar o Repositório

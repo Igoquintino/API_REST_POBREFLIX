@@ -7,6 +7,7 @@ export default {
     const query = `
       INSERT INTO external_api (source, catalog_id)
       VALUES ($1, $2)
+      ON CONFLICT (catalog_id) DO NOTHING
       RETURNING *;
     `;
     
@@ -14,6 +15,15 @@ export default {
     
     try {
       const pool = await connect();
+
+      // Verifica se já existe um registro com esse catalog_id
+      const checkQuery = `SELECT * FROM external_api WHERE catalog_id = $1`;
+      const checkResult = await pool.query(checkQuery, [catalogId]);
+
+      if (checkResult.rows.length > 0) {
+          return { message: "Registro já existente, nenhuma ação realizada" };
+      }
+
       const result = await pool.query(query, values);
       return result.rows[0]; // Return the newly created record
     } catch (err) {

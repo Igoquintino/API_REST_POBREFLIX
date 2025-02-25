@@ -80,7 +80,7 @@ export default {
     async selectCatalogByTitle(title) { // Busca por Titulo ou ID OK!
         try {
             const pool = await connect();
-            const query = "SELECT * FROM catalog WHERE title = $1";
+            const query = "SELECT * FROM catalog WHERE upper(title) LIKE '%' || upper($1) || '%'";
             const values = [title]; // Parâmetros em um único array
             const res = await pool.query(query, values);
             

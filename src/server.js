@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import seedDatabase from '../config/seedData.js';
 
 dotenv.config();
 console.log(`Connection String: veja ${process.env.CONNECTION_STRING}`);  // Adicione essa linha para verificar a string de conexão
@@ -25,7 +26,7 @@ app.use(express.json());
 // Habilite o CORS
 app.use(cors()); // Isso permitirá que o backend aceite requisições de qualquer origem. Se quiser restringir a origem, você pode configurar o CORS mais especificamente.
 
-
+seedDatabase();
 
 // Rotas
 app.use("/catalog", catalogRoutes); //*
@@ -36,8 +37,6 @@ app.use("/logAccess", logAccessRoutes); //**
 app.use("/consumption", consumptionRoutes); // *
 app.use("/auth", authRoutes); // Adiciona as rotas de autenticação *
 app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem *
-
-
 
 
 app.listen(port, () => {
