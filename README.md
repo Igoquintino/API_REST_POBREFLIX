@@ -222,6 +222,19 @@ O servidor estará disponível em: **[http://localhost:3000](http://localhost:30
 
 ---  
 
+Após a modificação para o seu caso do CONNECTION_STRING, e iniciando a aplicação, o script chamado `seedData.js` localizado na pasta `config` será inicializado junto, fazendo Drop das tabelas para evitar duplicação de dados caso ja tenha o banco povoado, caso contrario ele cria as tabelas e povoa com os dados de teste, mas funcionais, além de claro, ter login de acesso, tanto de adm quanto de client  
+
+#### Logins:
+```sh
+email: admin@exemplo.com #Para Administrator
+password: admin123
+
+
+email: client@example.com #Para Client
+password: client123 
+```
+
+
 ## 🔥 Rotas Disponíveis
 
 ### 🟢 **GET (Listar Dados)**
