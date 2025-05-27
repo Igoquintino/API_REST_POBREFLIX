@@ -11,6 +11,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.0",
+    "mongoose": "^8.15.0",
     "pg": "^8.13.1"
   },
   "scripts": {
@@ -20,6 +21,6 @@
     "prod": "node ./src/server.js"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.10"
   }
 }

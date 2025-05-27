@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ferramenta de Criptografia AES-GCM (Cliente)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.1/forge.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+            background-color: #f4f7f9;
+        }
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        h1, h2 {
+            color: #1a2533;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            display: block;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .status-message {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .input-example {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ferramenta de Criptografia AES-GCM (Cliente)</h1>
+    <p>Use esta ferramenta para gerar o corpo (body) criptografado para suas requisições na API Pobreflix.</p>
+
+    <div class="form-group">
+        <label for="criptoKey">1. Chave de Criptografia (<code>cripto_key</code> em hexadecimal):</label>
+        <input type="text" id="criptoKey" placeholder="Cole a chave de 64 caracteres hexadecimais aqui...">
+        <p class="input-example">Ex: 2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c (este é um exemplo, use a sua)</p>
+    </div>
+
+    <div class="form-group">
+        <label for="payload">2. Payload JSON a ser criptografado:</label>
+        <textarea id="payload" placeholder='{ "name": "Novo Nome", "email": "novo@email.com" }'></textarea>
+        <p class="input-example">Insira o objeto JSON que você deseja enviar no corpo da requisição.</p>
+    </div>
+
+    <button onclick="runEncryption()">Criptografar e Gerar Payload</button>
+
+    <div id="status" class="status-message" style="display:none;"></div>
+
+    <h2>3. Resultado para Envio (Body da Requisição)</h2>
+    <p>Copie o JSON abaixo e cole no corpo (body) da sua requisição no Postman (modo "raw" e tipo "JSON").</p>
+    <pre id="result">O resultado criptografado aparecerá aqui.</pre>
+</div>
+
+<script>
+    /**
+     * Semeia o gerador de números aleatórios do Forge usando window.crypto.
+     * Isso deve ser feito uma vez, idealmente quando a página carrega ou antes da primeira operação de criptografia.
+     */
+    function seedForgeRandom() {
+        if (window.forge && window.crypto && window.crypto.getRandomValues) {
+            try {
+                // Coleta 32 bytes de entropia do gerador do navegador
+                const randomBytes = new Uint8Array(32);
+                window.crypto.getRandomValues(randomBytes);
+                // Converte para uma string de bytes que o Forge pode usar
+                let byteString = '';
+                for (let i = 0; i < randomBytes.length; ++i) {
+                    byteString += String.fromCharCode(randomBytes[i]);
+                }
+                forge.random.collect(byteString);
+                // console.log("Forge PRNG semeado com window.crypto.");
+            } catch (e) {
+                console.warn("Não foi possível semear o Forge PRNG com window.crypto:", e);
+                // Como fallback, podemos tentar coletar de outras formas ou avisar o usuário.
+                // Para este exemplo, vamos apenas logar o aviso.
+                // Em um cenário real, você poderia adicionar mais listeners de eventos (mousemove, keypress)
+                // para coletar entropia se window.crypto não estiver disponível ou falhar.
+            }
+        } else {
+            console.warn("window.crypto.getRandomValues não está disponível para semear o Forge PRNG. A geração de IV pode ser menos segura ou falhar.");
+        }
+    }
+
+    // Chama a função de semeadura quando o script é carregado
+    // ou quando a biblioteca Forge estiver disponível.
+    if (window.forge) {
+        seedForgeRandom();
+    } else {
+        // Se Forge não carregou ainda, espera o evento DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.forge) seedForgeRandom();
+        });
+    }
+
+
+    /**
+     * Função principal que é chamada pelo botão.
+     */
+    function runEncryption() {
+        const statusEl = document.getElementById('status');
+        const resultEl = document.getElementById('result');
+        statusEl.style.display = 'none'; // Esconde mensagens anteriores
+        resultEl.textContent = 'Processando...';
+
+        try {
+            // Obter os valores dos campos de entrada
+            const keyHex = document.getElementById('criptoKey').value.trim();
+            const payloadText = document.getElementById('payload').value;
+
+            // Validar entradas
+            if (!keyHex) {
+                throw new Error("A 'cripto_key' é obrigatória.");
+            }
+            if (keyHex.length !== 64 || !/^[0-9a-fA-F]+$/.test(keyHex)) {
+                throw new Error("A 'cripto_key' deve ter 64 caracteres hexadecimais (0-9, a-f, A-F).");
+            }
+            if (!payloadText.trim()) {
+                throw new Error("O payload JSON não pode estar vazio.");
+            }
+
+            let parsedPayload;
+            try {
+                parsedPayload = JSON.parse(payloadText);
+            } catch (e) {
+                throw new Error("O payload inserido não é um JSON válido. Verifique a sintaxe.");
+            }
+
+            // Criptografar os dados
+            const encryptedObject = encryptAESGCM(payloadText, keyHex);
+
+            // Exibir o resultado formatado
+            resultEl.textContent = JSON.stringify(encryptedObject, null, 2);
+            statusEl.textContent = 'Payload criptografado com sucesso!';
+            statusEl.className = 'status-message success';
+            statusEl.style.display = 'block';
+
+        } catch (error) {
+            resultEl.textContent = 'Ocorreu um erro ao tentar criptografar.';
+            statusEl.textContent = `Erro: ${error.message}`;
+            statusEl.className = 'status-message error';
+            statusEl.style.display = 'block';
+            console.error("Erro detalhado:", error);
+        }
+    }
+
+    /**
+     * Criptografa o texto usando AES-256-GCM com a biblioteca Forge.js.
+     * @param {string} plaintext - O texto a ser criptografado (ex: um JSON em formato de string).
+     * @param {string} keyHex - A chave de 32 bytes (256 bits) em formato hexadecimal.
+     * @returns {object} - Um objeto contendo os dados criptografados e metadados em Base64.
+     * Ex: { encryptedData: "...", iv: "...", authTag: "..." }
+     */
+    function encryptAESGCM(plaintext, keyHex) {
+        if (!window.forge) {
+            throw new Error("A biblioteca Forge.js não foi carregada. Verifique a conexão com a internet ou o link do CDN.");
+        }
+        // Tenta semear novamente se ainda não foi feito ou se houve problema.
+        if (!forge.random.getBytesSync) { // Uma forma de checar se o PRNG está pronto
+            console.warn("PRNG do Forge pode não estar pronto, tentando semear novamente.");
+            seedForgeRandom();
+        }
+
+
+        // Converte a chave hexadecimal para bytes, que é o formato que a biblioteca Forge usa.
+        // Uma chave de 64 caracteres hexadecimais representa 32 bytes.
+        const keyBytes = forge.util.hexToBytes(keyHex);
+
+        // Gera um IV (Initialization Vector) aleatório.
+        // Para AES-GCM, um IV de 12 bytes (96 bits) é comumente recomendado e usado.
+        // Esta é a linha que estava causando o erro se o PRNG não estivesse semeado.
+        const ivBytes = forge.random.getBytesSync(12);
+
+
+        // Cria uma nova instância do cifrador AES-GCM.
+        const cipher = forge.cipher.createCipher('AES-GCM', keyBytes);
+
+        // Inicia o cifrador com o IV.
+        // A tag de autenticação (authTag) será gerada automaticamente.
+        cipher.start({
+            iv: ivBytes,
+            // tagLength: 128 // Opcional, o padrão para GCM é 128 bits (16 bytes)
+        });
+
+        // Fornece os dados que devem ser criptografados.
+        // Os dados devem estar em formato de buffer. 'utf8' é importante para strings.
+        cipher.update(forge.util.createBuffer(plaintext, 'utf8'));
+
+        // Finaliza a criptografia. Se o processo falhar aqui, um erro será lançado.
+        const result = cipher.finish(); // Retorna true em sucesso, false em falha (ex: tag inválida na descriptografia)
+        if (!result) {
+            throw new Error("Falha ao finalizar a operação de criptografia AES-GCM.");
+        }
+
+        // O resultado da criptografia contém o ciphertext e a tag de autenticação.
+        // Na Forge, cipher.output contém o ciphertext.
+        // cipher.mode.tag contém a tag de autenticação.
+        const ciphertextBytes = cipher.output.getBytes();
+        const authTagBytes = cipher.mode.tag.getBytes();
+
+        // Retorna o objeto no formato que o servidor espera, com tudo codificado em Base64.
+        return {
+            encryptedData: forge.util.encode64(ciphertextBytes),
+            iv: forge.util.encode64(ivBytes),
+            authTag: forge.util.encode64(authTagBytes)
+        };
+    }
+</script>
+</body>
+</html>
