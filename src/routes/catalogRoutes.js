@@ -17,6 +17,7 @@ router.post("/addCatalog", authenticate, catalogController.createCatalog); // Ad
 router.patch("/:id", authenticate, catalogController.upCatalog); // atualizar filme no catalog ADM OK! *
 router.delete("/:id", authenticate, catalogController.deleteCatalog); // excluir filme no catalog ADM OK! * 
 
+
 export default router;
 
 
