@@ -1,4 +1,5 @@
 import userModel from "../models/userModel.js";
+import log from "../utils/logger.js"; // Importando o logger para registrar as operações
 
 const userController = {
     async getAllUsers(req, res) { // Pegar todos os usuários OK! ADM
@@ -23,8 +24,26 @@ const userController = {
             // Buscando todos os usuários (model já lida com o banco)
             const users = await userModel.selectAllUsers();
             res.status(200).json(users);
+
+            await log(
+                "SEARCH_ALL_USERS",
+                `Busca por todos os usuários`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
         } catch (err) {
             res.status(500).json({ error: `Erro ao buscar todos os usuários: ${err.message}` });
+
+            await log(
+                "SEARCH_ALL_USERS",
+                `Busca por todos os usuários`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "FAILURE"
+            );
         }
     },
 
@@ -47,9 +66,27 @@ const userController = {
     
             const users = await userModel.selectUsersByIdOrNameOrEmail(id, name, email);
             res.json(users);
+
+            await log(
+                "SEARCH_USER",
+                `Busca de usuário: id=${id}, name=${name}, email=${email}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
     
         } catch (err) {
             res.status(500).json({ error: `Erro ao buscar usuários: ${err.message}` });
+
+            await log(
+                "SEARCH_USER",
+                `Busca de usuário: id=${id}, name=${name}, email=${email}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "FAILURE"
+            );
         }
     },
 
@@ -69,6 +106,15 @@ const userController = {
             const user = await userModel.addUser(name, email, password, user_type, creatorUserType);
     
             res.status(201).json(user);
+
+            await log(
+                "CREATE_USER_ADM",
+                `Usuário criado: userId=${user.id}, email=${email}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
         } catch (err) {
     
             if (err.code === '23505') { // Código de erro do PostgreSQL para UNIQUE constraint
@@ -100,6 +146,16 @@ const userController = {
                 message: "Usuário cadastrado com sucesso!",
                 user: newUser
             });
+
+            await log(
+                "CREATE_USER",
+                `Usuário criado: userId=${user.id}, email=${email}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
+
         } catch (err) {
             res.status(500).json({ error: `Erro ao cadastrar usuário: ${err.message}` });
         }
@@ -145,8 +201,27 @@ const userController = {
     
             // 6. Retorna o usuário atualizado
             res.status(200).json(updatedUser);
+
+            await log(
+                "UPDATE_USER",
+                `Usuário atualizado: userId=${id}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
+
         } catch (err) {
             res.status(500).json({ error: `Erro ao atualizar usuário: ${err.message}` });
+
+            await log(
+                "UPDATE_USER",
+                `Erro ao atualizar usuário: userId=${id}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "FAILURE"
+            );
         }
     },
     
@@ -169,8 +244,26 @@ const userController = {
             }
 
             res.status(204).send();
+
+            await log(
+                "DELETE_USER",
+                `Usuário deletado: userId=${id}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "SUCCESS"
+            );
         } catch (err) {
             res.status(500).json({ error: `Erro ao excluir usuário: ${err.message}` });
+
+            await log(
+                "DELETE_USER",
+                `Erro ao excluir usuário: userId=${id}`,
+                req.userId,
+                req.ip,
+                req.headers["user-agent"],
+                "FAILURE"
+            );
         }
     }
 };
