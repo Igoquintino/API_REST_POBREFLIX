@@ -1,8 +1,13 @@
 import express from "express";
 import catalogController from "../controllers/catalogController.js";
 import { authenticate } from "../middlewares/authMiddleware.js";
+import {requireApiKey} from "../middlewares/apiKeyMiddleware.js";
+import {decryptRequest} from "../middlewares/encryptionMiddleware.js";
 
 const router = express.Router();
+
+router.use(requireApiKey);
+router.use(decryptRequest);
 
 router.get("/", authenticate, catalogController.getAllCatalog); // Lista todos o catalogo USER OK! *
 router.get("/type/:content_type", authenticate, catalogController.getCatalogByType); // Busca por Type USER OK! *
@@ -11,6 +16,7 @@ router.get("/id/:id", authenticate, catalogController.getCatalogById); // Busca 
 router.post("/addCatalog", authenticate, catalogController.createCatalog); // Adicionar filme no catalog ADM OK! *
 router.patch("/:id", authenticate, catalogController.upCatalog); // atualizar filme no catalog ADM OK! *
 router.delete("/:id", authenticate, catalogController.deleteCatalog); // excluir filme no catalog ADM OK! * 
+
 
 export default router;
 

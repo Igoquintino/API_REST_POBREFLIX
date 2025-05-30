@@ -7,6 +7,7 @@ console.log(`Connection String: veja ${process.env.CONNECTION_STRING}`);  // Adi
 import express from "express";
 import catalogRoutes from "./routes/catalogRoutes.js"; // Importando as rotas de catálogo
 import userRoutes from "./routes/userRoutes.js";
+import deviceRoutes from './routes/deviceRoutes.js';
 import rootRoutes from "./routes/rootRoutes.js";
 import historyRoutes from "./routes/historyRoutes.js";
 import logAccessRoutes from "./routes/logAccessRoutes.js";
@@ -37,6 +38,8 @@ app.use("/logAccess", logAccessRoutes); //**
 app.use("/consumption", consumptionRoutes); // *
 app.use("/auth", authRoutes); // Adiciona as rotas de autenticação *
 app.use('/api/external-api', externalApiRoutes); // vericar isso muito bem *
+app.use('/devices', deviceRoutes);
+
 
 
 app.listen(port, () => {

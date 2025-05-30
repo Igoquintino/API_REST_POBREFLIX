@@ -2,43 +2,62 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import { addToBlacklist } from "../middlewares/authMiddleware.js";
+import logService from "../services/logService.js";
 
 
 const SECRET_KEY = process.env.JWT_SECRET || "minha_chave_secreta";
 const TOKEN_EXPIRATION = process.env.JWT_EXPIRES_IN || "1h";
 
 const authController = {
-    async login(req, res) { // Login OK!
+    async login(req, res) {
+        const { email, password } = req.body;
         try {
-            const { email, password } = req.body;
-
-            // Validação básica
             if (!email || !password) {
+                await logService.recordLog({
+                    req,
+                    operacao: 'LOGIN_ATTEMPT',
+                    status: 'FAILURE',
+                    descricao: 'Campos ausentes (email ou senha) na tentativa de login.'
+                });
                 return res.status(400).json({
                     error: "Os campos email e password são obrigatórios.",
                 });
             }
 
-            console.log(`Tentativa de login: email=${email}, horário=${new Date().toISOString()}`);
+            // Log da tentativa inicial
+            await logService.recordLog({
+                req,
+                operacao: 'LOGIN_ATTEMPT',
+                status: 'INFO',
+                descricao: `Tentativa de login para email: ${email}`
+            });
 
-            // Verifica se o usuário existe no banco de dados
             const user = await userModel.getUserByEmail(email);
 
-            // Valida o email e a senha de forma genérica
             if (!user || !(await bcrypt.compare(password, user.password))) {
+                await logService.recordLog({
+                    req,
+                    operacao: 'LOGIN_AUTH_FAILURE', // Operação específica de falha na autenticação
+                    status: 'FAILURE',
+                    descricao: `Credenciais inválidas para email: ${email}`
+                });
                 return res.status(401).json({ error: "Credenciais inválidas." });
             }
 
-            // Gera o token JWT
             const token = jwt.sign(
                 { userId: user.id, userType: user.user_type },
                 SECRET_KEY,
                 { expiresIn: TOKEN_EXPIRATION }
             );
 
-            console.log(`Login bem-sucedido: userId=${user.id}, horário=${new Date().toISOString()}`);
+            await logService.recordLog({
+                req,
+                operacao: 'LOGIN_AUTH_SUCCESS', // Operação específica de sucesso na autenticação
+                status: 'SUCCESS',
+                id_usuario_especifico: user.id,
+                descricao: `Login bem-sucedido para email: ${email}`
+            });
 
-            // Retorna o token e as informações do usuário
             res.status(200).json({
                 message: "Login bem-sucedido!",
                 token,
@@ -50,32 +69,66 @@ const authController = {
                 },
             });
         } catch (err) {
-            console.error(`Erro ao autenticar: ${err.message}`);
-            res.status(500).json({ error: `Erro ao autenticar: ${err.message}` });
+            console.error(`Erro ao autenticar (${email}): ${err.message}`);
+            await logService.recordLog({
+                req,
+                operacao: 'LOGIN_SYSTEM_ERROR',
+                status: 'ERROR',
+                descricao: `Erro no sistema durante login para ${email}: ${err.message}`
+            });
+            res.status(500).json({ error: `Erro interno ao autenticar: ${err.message}` });
         }
     },
 
-    async logout(req, res) { // Logout OK!
+    async logout(req, res) {
+        // req.userId e req.createUserType são definidos pelo middleware 'authenticate' que roda antes desta rota
+        const userIdForLog = req.userId;
         try {
             const authHeader = req.headers.authorization;
 
             if (!authHeader || !authHeader.startsWith("Bearer ")) {
+                // Não temos userId aqui de forma confiável se o token estiver ausente/malformado
+                await logService.recordLog({
+                    req,
+                    operacao: 'LOGOUT_ATTEMPT',
+                    status: 'FAILURE',
+                    descricao: 'Tentativa de logout sem token ou token mal formatado.'
+                });
                 return res.status(401).json({ error: "Token não fornecido ou inválido." });
             }
 
             const token = authHeader.split(" ")[1];
+            const decoded = jwt.decode(token); // Apenas para pegar o tempo de expiração
 
-            // Obtemos o tempo de expiração do token
-            const decoded = jwt.decode(token);
-            const expiresIn = decoded.exp - Math.floor(Date.now() / 1000); // Tempo restante até a expiração
-
-            if (expiresIn > 0) {
-                addToBlacklist(token, expiresIn);
+            if (decoded && decoded.exp) {
+                const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+                if (expiresIn > 0) {
+                    addToBlacklist(token, expiresIn);
+                }
+            } else {
+                // Se não puder decodificar ou não tiver 'exp', não adiciona à blacklist, mas continua o logout
+                console.warn("Token não pôde ser completamente decodificado para blacklist no logout, mas prosseguindo.");
             }
-            console.log("Logout realizado com sucesso!");
+
+
+            await logService.recordLog({
+                req,
+                operacao: 'LOGOUT_SUCCESS',
+                status: 'SUCCESS',
+                id_usuario_especifico: userIdForLog, // Usa o userId obtido pelo middleware authenticate
+                descricao: `Usuário ID ${userIdForLog} realizou logout.`
+            });
             res.status(200).json({ message: "Logout realizado com sucesso!" });
 
         } catch (err) {
+            console.error("Erro ao fazer logout:", err.message);
+            await logService.recordLog({
+                req,
+                operacao: 'LOGOUT_ERROR',
+                status: 'ERROR',
+                id_usuario_especifico: userIdForLog, // Tenta logar com o userId se disponível
+                descricao: `Erro durante o logout para usuário ID ${userIdForLog}: ${err.message}`
+            });
             res.status(500).json({ error: "Erro ao fazer logout." });
         }
     }
