@@ -53,7 +53,7 @@ Caso queira verificar exemplos de utilização das rotas, acesse o link acima ou
 O arquivo `tabelas_pobreFlix.sql` contém a estrutura do banco de dados necessária para rodar a aplicação. Antes de iniciar o projeto, execute esse script no PostgreSQL para criar as tabelas.
 
 ```sh
-psql -U seu_usuario -d pobreflix -f tabelas_pobreFlix.sql
+psql -U seu_usuario -d pobreflix -f .doc/new-cria-banco-postgres.sql
 ```
 
 ---
