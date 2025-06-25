@@ -3,6 +3,13 @@
 Este documento descreve as atualizações implementadas no projeto **PobreFlix**, com foco em **segurança da informação**, **gestão de sessões** e **controle de acesso**, conforme boas práticas modernas para aplicações web.
 
 ---
+## Link para documento detalhado  
+🔗 **Documento geral parcial do Trabalho final:** [Acesse o documento aqui](<https://docs.google.com/document/d/1ShgHDFDKluyiXl6QKWq2UFKZcp7GHZX36TKPuNKE4Pg/edit?usp=sharing>) 
+
+
+---
+
+---
 
 ## 📌 Visão Geral
 
