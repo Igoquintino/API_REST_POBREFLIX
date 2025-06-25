@@ -82,7 +82,10 @@ CREATE TABLE sessao (
   api_key TEXT,
   ativa BOOLEAN,
   data_criacao TIMESTAMP,
-  data_expiracao TIMESTAMP
+  data_expiracao TIMESTAMP,
+  user_id INT, 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE 
+
 );
 
 ---
@@ -92,7 +95,7 @@ CREATE TABLE log (
   operacao VARCHAR(20) NOT NULL,
   descricao TEXT NOT NULL,
   timestamp TIMESTAMP NOT NULL, -- Usando TIMESTAMP ao invés de DATETIME
-  id_usuario INT NOT NULL,
+  id_usuario INT,
   ip VARCHAR(45) NOT NULL,
   user_agent VARCHAR(255) NOT NULL, -- Aumentado o tamanho para user_agent
   status VARCHAR(20) NOT NULL,

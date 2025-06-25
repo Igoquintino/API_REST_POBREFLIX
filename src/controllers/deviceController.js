@@ -27,8 +27,8 @@ const deviceController = {
                 descricao: `Tentativa de registrar dispositivo: '${nome_dispositivo}'`
             });
 
-            const result = await deviceModel.registerDevice(nome_dispositivo); // Supondo que registerDevice retorna { api_key, cripto_key, dispositivo, ... }
-
+            const result = await deviceModel.registerDevice(nome_dispositivo); // Chama a função do model
+            
             // Log de SUCESSO no registro do dispositivo
             await logService.recordLog({
                 req,
@@ -56,7 +56,6 @@ const deviceController = {
             res.status(500).json({ error: `Erro interno ao registrar o dispositivo: ${err.message}` });
         }
     }
-    // Se você tiver outras funções no deviceController, pode adicionar logs a elas também.
 };
 
 export default deviceController;

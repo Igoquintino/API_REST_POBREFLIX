@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
+import deviceModel from "../models/deviceModel.js"; // Importar deviceModel
 import { addToBlacklist } from "../middlewares/authMiddleware.js";
 import logService from "../services/logService.js";
-
+import { connect } from "../../config/database.js"; // Importar connect para usar pool.query diretamente
 
 const SECRET_KEY = process.env.JWT_SECRET || "minha_chave_secreta";
 const TOKEN_EXPIRATION = process.env.JWT_EXPIRES_IN || "1h";
@@ -11,6 +12,7 @@ const TOKEN_EXPIRATION = process.env.JWT_EXPIRES_IN || "1h";
 const authController = {
     async login(req, res) {
         const { email, password } = req.body;
+        //const currentApiKey = req.headers['x-api-key']
         try {
             if (!email || !password) {
                 await logService.recordLog({
@@ -44,6 +46,47 @@ const authController = {
                 return res.status(401).json({ error: "Credenciais inválidas." });
             }
 
+            //*** LOGICA PARA SIMULTANEOIDADE ESTRITA ***//
+            
+            // 1. Desativar todas as sessões existentes para este user_id
+            const deactivatedCount = await deviceModel.deactivateAllUserSessions(user.id);
+            if (deactivatedCount > 0) {
+                console.log(`Desativadas ${deactivatedCount} sessões anteriores para o usuário ID: ${user.id}`);
+                await logService.recordLog({
+                    req,
+                    operacao: 'SESSION_REVOCATION',
+                    status: 'SUCCESS',
+                    id_usuario_especifico: user.id,
+                    descricao: `Revogadas ${deactivatedCount} sessões anteriores devido a novo login.`
+                });
+            }
+
+            // 2. Garante que a API Key da requisição atual está ativa e associada ao usuário.
+            //    Se o deviceModel.registerDevice já é chamado no endpoint /devices/register,
+            //    e se a api_key é única, o que vem do req.deviceSession já é a sessão a ser usada.
+            //    Apenas atualizaremos o user_id dela, caso não esteja ligado.
+            let updatedDeviceSession;
+            if (req.deviceSession && req.deviceSession.id) {
+                // Se já temos uma sessão de dispositivo da API Key, atualiza ela com o userId
+                const pool = await connect(); // Supondo que connect() esteja disponível
+                const updateQuery = `
+                    UPDATE sessao
+                    SET user_id = $1, ativa = TRUE, data_expiracao = $2
+                    WHERE id = $3
+                    RETURNING *;
+                `;
+                const newExpirationDate = new Date();
+                newExpirationDate.setFullYear(newExpirationDate.getFullYear() + 1); // 1 ano de validade para a sessão do dispositivo
+                const updateResult = await pool.query(updateQuery, [user.id, newExpirationDate, req.deviceSession.id]);
+                updatedDeviceSession = updateResult.rows[0];
+            } else {
+                // Caso contrário (o que não deve acontecer se requireApiKey rodou), registra uma nova sessão.
+                // Isso é um fallback, idealmente req.deviceSession já existe.
+                const newApiKey = req.headers['x-api-key'] || 'Dispositivo_Sem_API_Key_Inicial';
+                updatedDeviceSession = await deviceModel.registerDevice(req.headers['user-agent'] || 'Dispositivo Desconhecido', user.id);
+                console.warn("req.deviceSession não estava disponível no login, nova sessão de dispositivo registrada como fallback.");
+            }
+
             const token = jwt.sign(
                 { userId: user.id, userType: user.user_type },
                 SECRET_KEY,
@@ -67,6 +110,8 @@ const authController = {
                     email: user.email,
                     user_type: user.user_type,
                 },
+                device_api_key: updatedDeviceSession.api_key, // Retorna a API Key ativa para o cliente
+                device_cripto_key: updatedDeviceSession.cripto_key // Retorna a chave de criptografia ativa
             });
         } catch (err) {
             console.error(`Erro ao autenticar (${email}): ${err.message}`);
@@ -83,6 +128,8 @@ const authController = {
     async logout(req, res) {
         // req.userId e req.createUserType são definidos pelo middleware 'authenticate' que roda antes desta rota
         const userIdForLog = req.userId;
+        //const currentApiKey = req.headers['x-api-key']; // Pega a API Key da requisição de logout
+        const currentApiKey = req.deviceSession ? req.deviceSession.api_key : null; 
         try {
             const authHeader = req.headers.authorization;
 
@@ -110,6 +157,21 @@ const authController = {
                 console.warn("Token não pôde ser completamente decodificado para blacklist no logout, mas prosseguindo.");
             }
 
+            // --- Lógica adicional para desativar a API Key do dispositivo no logout ---
+            if (currentApiKey) {
+                const deactivatedSession = await deviceModel.deactivateSessionByApiKey(currentApiKey);
+                if (deactivatedSession) {
+                    console.log(`API Key ${currentApiKey.substring(0, 8)}... desativada no logout.`);
+                    await logService.recordLog({
+                        req,
+                        operacao: 'DEVICE_API_KEY_DEACTIVATION',
+                        status: 'SUCCESS',
+                        id_usuario_especifico: userIdForLog,
+                        descricao: `API Key de dispositivo desativada no logout: ${currentApiKey.substring(0, 8)}...`
+                    });
+                }
+            }
+            // --- Fim da lógica adicional ---
 
             await logService.recordLog({
                 req,

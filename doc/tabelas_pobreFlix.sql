@@ -4,6 +4,10 @@ DROP TABLE IF EXISTS consumption_reports CASCADE;
 DROP TABLE IF EXISTS consumption_history CASCADE;
 DROP TABLE IF EXISTS catalog CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS sessao CASCADE;
+DROP TABLE IF EXISTS log CASCADE;
+
+
 
 -- Users Table
 CREATE TABLE users (
@@ -22,7 +26,8 @@ CREATE TABLE catalog (
     genre VARCHAR(100),
     content_type VARCHAR(50) CHECK (content_type IN ('filme', 'serie')) NOT NULL,
     video_url TEXT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_url TEXT
 );
 
 -- Consumption History Table
@@ -30,7 +35,9 @@ CREATE TABLE consumption_history (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     catalog_id INT REFERENCES catalog(id) ON DELETE CASCADE,
-    watched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    watched_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (catalog_id) REFERENCES catalog(id) ON DELETE CASCADE
 );
 
 -- Consumption Reports Table
@@ -41,13 +48,54 @@ CREATE TABLE consumption_reports (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Trigger para atualizar 'updated_at' automaticamente na tabela 'consumption_reports'
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_consumption_reports_updated_at
+BEFORE UPDATE ON consumption_reports
+FOR EACH ROW
+EXECUTE FUNCTION update_updated_at_column();
+
 -- External API Integration Table
 CREATE TABLE external_api (
     id SERIAL PRIMARY KEY,
     source VARCHAR(100) NOT NULL, -- Nome da API (ex: 'SuperFlix')
     catalog_id INT UNIQUE REFERENCES catalog(id) ON DELETE CASCADE, -- Garantindo que um catálogo só tenha um registro na API
-    synced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Data da sincronização
+    synced_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Data da sincronização
 );
 
-ALTER TABLE catalog ADD COLUMN image_url TEXT;
+---
+-- Session Table (Sessao)
+CREATE TABLE sessao (
+  id SERIAL PRIMARY KEY,
+  dispositivo VARCHAR(255),
+  cripto_key TEXT,
+  api_key TEXT,
+  ativa BOOLEAN,
+  data_criacao TIMESTAMP,
+  data_expiracao TIMESTAMP,
+  user_id INT, 
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE 
+
+);
+
+---
+-- Log Table
+CREATE TABLE log (
+  id SERIAL PRIMARY KEY,
+  operacao VARCHAR(20) NOT NULL,
+  descricao TEXT NOT NULL,
+  timestamp TIMESTAMP NOT NULL, -- Usando TIMESTAMP ao invés de DATETIME
+  id_usuario INT,
+  ip VARCHAR(45) NOT NULL,
+  user_agent VARCHAR(255) NOT NULL, -- Aumentado o tamanho para user_agent
+  status VARCHAR(20) NOT NULL,
+  FOREIGN KEY (id_usuario) REFERENCES users(id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 

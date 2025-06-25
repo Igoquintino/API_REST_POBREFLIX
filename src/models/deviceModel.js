@@ -7,7 +7,7 @@ const generateUniqueKey = (length = 32) => {
 };
 
 const deviceModel = {
-    async registerDevice(nomeDispositivo) {
+    async registerDevice(nomeDispositivo, user_id = null) {
         try {
             const pool = await connect();
 
@@ -19,14 +19,14 @@ const deviceModel = {
             dataExpiracao.setFullYear(dataExpiracao.getFullYear() + 1); // Define a expiração para 1 ano
 
             const query = `
-                INSERT INTO sessao (dispositivo, cripto_key, api_key, ativa, data_criacao, data_expiracao)
-                VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING id, dispositivo, api_key, cripto_key, ativa, data_criacao, data_expiracao;
+                INSERT INTO sessao (dispositivo, cripto_key, api_key, ativa, data_criacao, data_expiracao, user_id)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                RETURNING id, dispositivo, api_key, cripto_key, ativa, data_criacao, data_expiracao, user_id;
             `;
             // Nota: O nome da coluna para data de criação é 'data_criacao'.
             // Se no seu banco estiver 'data_datacricao', ajuste a query acima.
 
-            const values = [nomeDispositivo, criptoKey, apiKey, ativa, dataCriacao, dataExpiracao];
+            const values = [nomeDispositivo, criptoKey, apiKey, ativa, dataCriacao, dataExpiracao, user_id];
             const result = await pool.query(query, values);
 
             if (result.rows.length > 0) {
@@ -36,7 +36,8 @@ const deviceModel = {
                     api_key: newSession.api_key,
                     cripto_key: newSession.cripto_key,
                     dispositivo: newSession.dispositivo,
-                    data_expiracao: newSession.data_expiracao
+                    data_expiracao: newSession.data_expiracao,
+                    user_id: newSession.user_id
                 };
             } else {
                 throw new Error("Não foi possível registrar o dispositivo.");
@@ -80,6 +81,42 @@ const deviceModel = {
             return session;
         } catch (err) {
             console.error("Erro ao validar API key do dispositivo no model:", err.message);
+            throw err;
+        }
+    },
+
+    //** FUNÇÃIO PARA DESATIVAR TODAS AS SESSÕES DE UM USUÁRIO **//
+    async deactivateAllUserSessions(userId) {
+        try {
+            const pool = await connect();
+            const query = `
+                UPDATE sessao
+                SET ativa = FALSE, data_expiracao = NOW() -- Invalida a chave de API imediatamente
+                WHERE user_id = $1
+                RETURNING *;
+            `;
+            const result = await pool.query(query, [userId]);
+            return result.rows.length; // Retorna o número de sessões desativadas
+        } catch (err) {
+            console.error("Erro ao desativar sessões do usuário:", err.message);
+            throw err;
+        }
+    },
+
+    //** FUNÇÃO PARA DESATIVAR UMA SESSÕES DE UM USUÁRIO POR API KEY **// 
+    async deactivateSessionByApiKey(apiKey) {
+        try {
+            const pool = await connect();
+            const query = `
+                UPDATE sessao
+                SET ativa = FALSE, data_expiracao = NOW()
+                WHERE api_key = $1
+                RETURNING *;
+            `;
+            const result = await pool.query(query, [apiKey]);
+            return result.rows[0] || null;
+        } catch (err) {
+            console.error("Erro ao desativar sessão pela API Key:", err.message);
             throw err;
         }
     }
