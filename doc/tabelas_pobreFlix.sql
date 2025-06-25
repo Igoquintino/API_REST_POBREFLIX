@@ -89,7 +89,7 @@ CREATE TABLE sessao (
 -- Log Table
 CREATE TABLE log (
   id SERIAL PRIMARY KEY,
-  operacao VARCHAR(20) NOT NULL,
+  operacao VARCHAR(50) NOT NULL,
   descricao TEXT NOT NULL,
   timestamp TIMESTAMP NOT NULL, -- Usando TIMESTAMP ao invés de DATETIME
   id_usuario INT,
