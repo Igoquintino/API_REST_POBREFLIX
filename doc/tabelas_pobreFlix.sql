@@ -15,7 +15,7 @@ CREATE TABLE users (
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
-    user_type VARCHAR(50) CHECK (user_type IN ('Administrator', 'Client')) NOT NULL
+    user_type VARCHAR(50) CHECK (user_type IN ('Administrator', 'Client', 'Premium')) NOT NULL
 );
 
 -- Catalog Table

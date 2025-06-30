@@ -26,7 +26,7 @@ const seedDatabase = async () => {
                 name VARCHAR(100) NOT NULL,
                 email VARCHAR(100) UNIQUE NOT NULL,
                 password VARCHAR(100) NOT NULL,
-                user_type VARCHAR(50) CHECK (user_type IN ('Administrator', 'Client')) NOT NULL
+                user_type VARCHAR(50) CHECK (user_type IN ('Administrator', 'Client', 'Premium')) NOT NULL
             );
 
             CREATE TABLE catalog (
@@ -65,12 +65,13 @@ const seedDatabase = async () => {
 
         console.log("Inserindo dados...");
 
-        // Inserir usuários (Administrador e Cliente) 
-        // senha do Admin User: admin123 e senha do Client User: client123
+        // Inserir usuários (Administrador, Cliente, Premium) 
+        // senha do Admin User: admin123, senha do Client User: client123 e Premium User: premium123
         await pool.query(`
             INSERT INTO users (name, email, password, user_type) VALUES
             ('Admin User', 'admin@example.com', '$2a$12$K0bIrolcARfSxQM2.LFFsOU7eZHKgjY.1lLk3dglBqXbE8ZNuc0N2', 'Administrator'),
-            ('Client User', 'client@example.com', '$2a$12$dElPVKSM3n/AUnLlf1.UquLmKjGCHpyMjghPK3YeM6/UwVYWanGJm', 'Client')
+            ('Client User', 'client@example.com', '$2a$12$dElPVKSM3n/AUnLlf1.UquLmKjGCHpyMjghPK3YeM6/UwVYWanGJm', 'Client'),
+            ('Premium User', 'premium@example.com', '$2a$12$pdRyj9MLmMnFt4n5vOBfiuQWTuSAOEZryM4Z4X9Y05ApS/8MoNiIW', 'Premium')
         `);
 
         // Inserir filmes no catálogo

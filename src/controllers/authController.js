@@ -9,6 +9,11 @@ import { connect } from "../../config/database.js"; // Importar connect para usa
 const SECRET_KEY = process.env.JWT_SECRET || "minha_chave_secreta";
 const TOKEN_EXPIRATION = process.env.JWT_EXPIRES_IN || "1h";
 
+// Defina os limites de sessões por tipo de usuário
+const MAX_COMMON_SESSIONS = 1; // Para 'Client' - estrita não-simultaneidade
+const MAX_PREMIUM_SESSIONS = 3; // Exemplo: 3 sessões para usuários 'Premium'
+
+
 const authController = {
     async login(req, res) {
         const { email, password } = req.body;
@@ -49,18 +54,52 @@ const authController = {
             //*** LOGICA PARA SIMULTANEOIDADE ESTRITA ***//
             
             // 1. Desativar todas as sessões existentes para este user_id
-            const deactivatedCount = await deviceModel.deactivateAllUserSessions(user.id);
-            if (deactivatedCount > 0) {
-                console.log(`Desativadas ${deactivatedCount} sessões anteriores para o usuário ID: ${user.id}`);
-                await logService.recordLog({
-                    req,
-                    operacao: 'SESSION_REVOCATION',
-                    status: 'SUCCESS',
-                    id_usuario_especifico: user.id,
-                    descricao: `Revogadas ${deactivatedCount} sessões anteriores devido a novo login.`
-                });
+            // const deactivatedCount = await deviceModel.deactivateAllUserSessions(user.id);
+            // if (deactivatedCount > 0) {
+            //     console.log(`Desativadas ${deactivatedCount} sessões anteriores para o usuário ID: ${user.id}`);
+            //     await logService.recordLog({
+            //         req,
+            //         operacao: 'SESSION_REVOCATION',
+            //         status: 'SUCCESS',
+            //         id_usuario_especifico: user.id,
+            //         descricao: `Revogadas ${deactivatedCount} sessões anteriores devido a novo login.`
+            //     });
+            // }
+
+            // --- Lógica para controle de sessões simultâneas por tipo de usuário ---
+            let sessionsToDeactivateCount = 0;
+            let maxAllowedSessionsForUser = MAX_COMMON_SESSIONS; // Padrão para comum
+
+            console.log (`Tipo de usuário: ${user.user_type}`);
+
+            if (user.user_type === 'Premium') {
+                maxAllowedSessionsForUser = MAX_PREMIUM_SESSIONS;
+            } else if (user.user_type === 'Client') {
+                maxAllowedSessionsForUser = MAX_COMMON_SESSIONS;
+            } else {
+                // Caso tenha outros tipos de usuário (ex: Administrator), defina um limite padrão
+                // ou ajuste conforme a sua política de segurança.
+                console.warn(`Tipo de usuário desconhecido ou não configurado para sessões simultâneas: ${user.user_type}. Aplicando limite padrão de ${MAX_COMMON_SESSIONS}.`);
             }
 
+            console.log(`maxAllowedSessionsForUser: ${maxAllowedSessionsForUser}`);
+
+            // Chama a nova função para desativar apenas as sessões em excesso
+            sessionsToDeactivateCount = await deviceModel.deactivateExcessUserSessions(user.id, maxAllowedSessionsForUser);
+            console.log(user.id)
+            console.log(`sessionsToDeactivateCount: ${sessionsToDeactivateCount} dlskdlskldksldklskdlskldks`);
+
+            if (sessionsToDeactivateCount > 0) {
+                console.log(`Desativadas ${sessionsToDeactivateCount} sessões anteriores em excesso para o usuário ID: ${user.id}`);
+                await logService.recordLog({
+                    req,
+                    operacao: 'SESSION_REVOCATION_EXCESS', // Nova operação de log
+                    status: 'SUCCESS',
+                    id_usuario_especifico: user.id,
+                    descricao: `Revogadas ${sessionsToDeactivateCount} sessões anteriores em excesso devido a novo login (Limite: ${maxAllowedSessionsForUser}).`
+                });
+            }
+    
             // 2. Garante que a API Key da requisição atual está ativa e associada ao usuário.
             //    Se o deviceModel.registerDevice já é chamado no endpoint /devices/register,
             //    e se a api_key é única, o que vem do req.deviceSession já é a sessão a ser usada.
@@ -88,17 +127,17 @@ const authController = {
             }
 
             const token = jwt.sign(
-                { userId: user.id, userType: user.user_type },
+                { userId: user.id, userType: user.user_type, deviceApiKey: updatedDeviceSession.api_key },
                 SECRET_KEY,
                 { expiresIn: TOKEN_EXPIRATION }
             );
 
             await logService.recordLog({
                 req,
-                operacao: 'LOGIN_AUTH_SUCCESS', // Operação específica de sucesso na autenticação
+                operacao: 'LOGIN_AUTH_SUCCESS',
                 status: 'SUCCESS',
                 id_usuario_especifico: user.id,
-                descricao: `Login bem-sucedido para email: ${email}`
+                descricao: `Login bem-sucedido para email: ${email}. Nova sessão de dispositivo iniciada/reativada.`
             });
 
             res.status(200).json({
