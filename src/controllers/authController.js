@@ -51,23 +51,8 @@ const authController = {
                 return res.status(401).json({ error: "Credenciais inválidas." });
             }
 
-            //*** LOGICA PARA SIMULTANEOIDADE ESTRITA ***//
-            
-            // 1. Desativar todas as sessões existentes para este user_id
-            // const deactivatedCount = await deviceModel.deactivateAllUserSessions(user.id);
-            // if (deactivatedCount > 0) {
-            //     console.log(`Desativadas ${deactivatedCount} sessões anteriores para o usuário ID: ${user.id}`);
-            //     await logService.recordLog({
-            //         req,
-            //         operacao: 'SESSION_REVOCATION',
-            //         status: 'SUCCESS',
-            //         id_usuario_especifico: user.id,
-            //         descricao: `Revogadas ${deactivatedCount} sessões anteriores devido a novo login.`
-            //     });
-            // }
-
             // --- Lógica para controle de sessões simultâneas por tipo de usuário ---
-            let sessionsToDeactivateCount = 0;
+            //let sessionsToDeactivateCount = 0;
             let maxAllowedSessionsForUser = MAX_COMMON_SESSIONS; // Padrão para comum
 
             console.log (`Tipo de usuário: ${user.user_type}`);
@@ -77,33 +62,32 @@ const authController = {
             } else if (user.user_type === 'Client') {
                 maxAllowedSessionsForUser = MAX_COMMON_SESSIONS;
             } else {
-                // Caso tenha outros tipos de usuário (ex: Administrator), defina um limite padrão
-                // ou ajuste conforme a sua política de segurança.
+                // Tipo de usuário desconhecido ou não configurado
                 console.warn(`Tipo de usuário desconhecido ou não configurado para sessões simultâneas: ${user.user_type}. Aplicando limite padrão de ${MAX_COMMON_SESSIONS}.`);
             }
 
             console.log(`maxAllowedSessionsForUser: ${maxAllowedSessionsForUser}`);
 
-            // Chama a nova função para desativar apenas as sessões em excesso
-            sessionsToDeactivateCount = await deviceModel.deactivateExcessUserSessions(user.id, maxAllowedSessionsForUser);
-            console.log(user.id)
-            console.log(`sessionsToDeactivateCount: ${sessionsToDeactivateCount} dlskdlskldksldklskdlskldks`);
+              // --- NOVA LÓGICA: Verificar limite de sessões ATIVAS ANTES de permitir o novo login ---
+            const activeSessionsCount = await deviceModel.countActiveSessionsForUser(user.id);
 
-            if (sessionsToDeactivateCount > 0) {
-                console.log(`Desativadas ${sessionsToDeactivateCount} sessões anteriores em excesso para o usuário ID: ${user.id}`);
+            // Se o número de sessões ativas já é igual ou maior ao limite permitido, bloqueia o novo login
+            if (activeSessionsCount >= maxAllowedSessionsForUser) {
+                // Registrar no log a tentativa de login bloqueada
                 await logService.recordLog({
                     req,
-                    operacao: 'SESSION_REVOCATION_EXCESS', // Nova operação de log
-                    status: 'SUCCESS',
+                    operacao: 'LOGIN_BLOCKED_SESSION_LIMIT', // Nova operação de log
+                    status: 'FAILURE',
                     id_usuario_especifico: user.id,
-                    descricao: `Revogadas ${sessionsToDeactivateCount} sessões anteriores em excesso devido a novo login (Limite: ${maxAllowedSessionsForUser}).`
+                    descricao: `Tentativa de login bloqueada para ${email}. Limite de ${maxAllowedSessionsForUser} sessões atingido.`
+                });
+                return res.status(403).json({ // 403 Forbidden para indicar que o acesso é negado
+                    error: `Limite de sessões (${maxAllowedSessionsForUser}) atingido. Por favor, deslogue de outro dispositivo para continuar.`
                 });
             }
-    
+            // --- FIM DA NOVA LÓGICA DE BLOQUEIO ---
+
             // 2. Garante que a API Key da requisição atual está ativa e associada ao usuário.
-            //    Se o deviceModel.registerDevice já é chamado no endpoint /devices/register,
-            //    e se a api_key é única, o que vem do req.deviceSession já é a sessão a ser usada.
-            //    Apenas atualizaremos o user_id dela, caso não esteja ligado.
             let updatedDeviceSession;
             if (req.deviceSession && req.deviceSession.id) {
                 // Se já temos uma sessão de dispositivo da API Key, atualiza ela com o userId
@@ -121,7 +105,6 @@ const authController = {
             } else {
                 // Caso contrário (o que não deve acontecer se requireApiKey rodou), registra uma nova sessão.
                 // Isso é um fallback, idealmente req.deviceSession já existe.
-                const newApiKey = req.headers['x-api-key'] || 'Dispositivo_Sem_API_Key_Inicial';
                 updatedDeviceSession = await deviceModel.registerDevice(req.headers['user-agent'] || 'Dispositivo Desconhecido', user.id);
                 console.warn("req.deviceSession não estava disponível no login, nova sessão de dispositivo registrada como fallback.");
             }
