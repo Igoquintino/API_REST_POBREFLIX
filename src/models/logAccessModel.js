@@ -1,6 +1,13 @@
 import { connect } from "../../config/database.js";
 
 export default {
+
+    async getAllLog() {
+        const pool = await connect();
+        const res = await pool.query("SELECT * FROM log");
+        return res.rows;
+    },
+
     async logAccess() {
 
         const pool = await connect();
