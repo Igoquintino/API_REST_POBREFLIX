@@ -8,6 +8,15 @@ Pobreflix é uma API desenvolvida em **Node.js** com **Express** e **PostgreSQL*
 🔗 **Frontend do Pobreflix:** [Acesse o repositório aqui](<https://github.com/Igoquintino/FRONTEND_PobreFlix.git>)  
 
 ---
+# 💥💥 Implementações de Segurança  💥💥  
+### ✨ Atenção !!!
+
+Para visualização geral do trabalho de implentação, segue o link abaixo para README explicando sobre ou procure na raiz dos arquivos da API_REST_PobreFlix pelo nome: README_SEGURANCA.md  
+
+💥 **README_SEGURANCA:** [Acesse o local aqui](README_SEGURANCA.md) 💥  
+
+
+---
 
 ## 🚀 Tecnologias Utilizadas  
 

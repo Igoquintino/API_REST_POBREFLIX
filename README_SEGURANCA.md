@@ -3,11 +3,19 @@
 Este documento descreve as atualizações implementadas no projeto **PobreFlix**, com foco em **segurança da informação**, **gestão de sessões** e **controle de acesso**, conforme boas práticas modernas para aplicações web.
 
 ---
-## Link para documento detalhado  
-🔗 **Documento geral parcial do Trabalho final:** [Acesse o documento aqui](<https://docs.google.com/document/d/1ShgHDFDKluyiXl6QKWq2UFKZcp7GHZX36TKPuNKE4Pg/edit?usp=sharing>) 
+## Link para documentos detalhado  
+🔗 **Documento geral parcial 1 do Trabalho final google doc:** [Acesse o documento aqui](<https://docs.google.com/document/d/1ShgHDFDKluyiXl6QKWq2UFKZcp7GHZX36TKPuNKE4Pg/edit?usp=sharing>)  
 
+🔗 **Documento geral parcial 2 do Trabalho final google doc:** [Acesse o documento aqui](<https://docs.google.com/document/d/1F_Erng2N2V2D93RxmM72i-B5Ird5c26czF5wq0i9ILk/edit?usp=sharing>) 
 
----
+🔗 **Documento geral do Trabalho final google doc:** [Acesse o documento aqui](<https://docs.google.com/document/d/1_MMPyUojFlMA4_9cOIXHD83FUgVnfTgIRD3wXRBCqTI/edit?usp=sharing>) 
+
+## Mesmos documentos, só que localizado na pasta do projeto  
+🔗 **Documento geral parcial 1 do Trabalho final PDF:** [Acesse o documento aqui](</doc/Entrega parcial 1 - Igo.pdf>) 
+
+🔗 **Documento geral parcial 2 do Trabalho final PDF:** [Acesse o documento aqui](</doc/Entrega parcial 2 - Igo.pdf>) 
+
+🔗 **Documento geral do Trabalho final PDF:** [Acesse o documento aqui](</doc/Documento Entrega Final Segurança da Informação - Igo.pdf>)  
 
 ---
 
