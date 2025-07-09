@@ -15,7 +15,11 @@ Este documento descreve as atualizações implementadas no projeto **PobreFlix**
 
 🔗 **Documento geral parcial 2 do Trabalho final PDF:** [Acesse o documento aqui](</doc/Entrega parcial 2 - Igo.pdf>) 
 
-🔗 **Documento geral do Trabalho final PDF:** [Acesse o documento aqui](</doc/Documento Entrega Final Segurança da Informação - Igo.pdf>)  
+### 🔗 **Documento geral do Trabalho final PDF:** [Acesse o documento aqui, Esse aqui !!!](</doc/Documento Entrega Final Segurança da Informação - Igo.pdf>)  
+
+### 🔗 **Vídeo geral do Trabalho final, no drive:** [Acesse o documento aqui, Esse aqui !!!](<https://drive.google.com/file/d/1RbJOw1xSnXapJqUYjSQXHw33Ar7a7RmO/view?usp=sharing>) 
+
+
 
 ---
 
