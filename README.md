@@ -872,5 +872,5 @@ Quer contribuir? Siga os passos:
 ## 📩 Contato
 Se precisar de ajuda, entre em contato:
 📧 **Email:** igocastro.15@gmail.com  
-🐙 **GitHub:** [Igoquintino](https://github.com/Igoquintino)  
+🐙 **GitHub:** [Castro Prata](https://github.com/Igoquintino)  
 
